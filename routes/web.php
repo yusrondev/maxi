@@ -14,8 +14,14 @@ Route::get('/', function () {
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    // dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // cms
     Route::get('/cms', [CMSController::class, 'index'])->name('cms');
+    Route::put('/cms/{id}', [CMSController::class, 'update'])->name('cms.update');
+    
+    //profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

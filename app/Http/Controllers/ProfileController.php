@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
@@ -16,7 +17,7 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
+        return view('admin.edit', [
             'user' => $request->user(),
         ]);
     }
