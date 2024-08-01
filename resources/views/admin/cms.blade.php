@@ -45,4 +45,67 @@
       </div>
   </div>
 </div>
+
 @include('admin.layouts.footer')
+
+<script>
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Mencegah pengiriman form secara langsung
+
+            const formId = this.id;
+            const formData = new FormData(this);
+
+            // Mendapatkan token CSRF dari meta tag
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            if (!csrfToken) {
+                console.error('CSRF token not found.');
+                return;
+            }
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to save changes!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, save it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(this.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json',
+                        },
+                        body: formData
+                    }).then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Network response was not ok.');
+                    }).then(data => {
+                        // Menampilkan notifikasi sukses
+                        Swal.fire(
+                            'Saved!',
+                            'Your changes have been saved.',
+                            'success'
+                        ).then(() => {
+                            // Refresh halaman setelah menampilkan notifikasi sukses
+                            location.reload();
+                        });
+                    }).catch(error => {
+                        Swal.fire(
+                            'Error!',
+                            'There was an error saving your changes.',
+                            'error'
+                        );
+                        console.error('Error:', error);
+                    });
+                }
+            });
+        });
+    });
+</script>

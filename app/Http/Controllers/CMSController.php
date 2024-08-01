@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Cms;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\DataTables;
 
 class CMSController extends Controller
 {
@@ -45,5 +49,80 @@ class CMSController extends Controller
         $cms->save();
 
         return response()->json(['message' => 'Data updated successfully!']);
+    }
+
+    public function setting(){
+
+        $data = DB::table('cms')
+        ->get();
+
+        return view('admin.setting', ['data' => $data]);
+    }
+
+    public function getUsers()
+    {
+        $users = DB::table('users')->where('id', '!=', 1)->get();
+        return response()->json(['data' => $users]);
+    }
+
+    public function store(Request $request)
+    {
+        // Validasi data
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+        ]);
+
+        // Simpan data pengguna
+        $userId = DB::table('users')->insertGetId([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return response()->json(['success' => true, 'userId' => $userId]);
+    }
+
+    public function updateUser(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'password' => 'nullable|string|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user = User::find($id);
+
+        if ($user) {
+            $user->name = $request->name;
+            $user->email = $request->email;
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->password);
+            }
+            $user->save();
+
+            return response()->json(['success' => 'User updated successfully']);
+        }
+
+        return response()->json(['error' => 'User not found'], 404);
+    }
+
+    public function destroy($id)
+    {
+        $user = User::find($id);
+
+        if ($user) {
+            $user->delete();
+            return response()->json(['success' => 'User deleted successfully']);
+        }
+
+        return response()->json(['error' => 'User not found'], 404);
     }
 }

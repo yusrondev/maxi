@@ -17,8 +17,12 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $data = DB::table('cms')
+        ->get();
+
         return view('admin.edit', [
             'user' => $request->user(),
+            'data' => $data
         ]);
     }
 
