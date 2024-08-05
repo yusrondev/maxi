@@ -3,12 +3,19 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CMSController;
+use App\Http\Controllers\RoomController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\Yaml\Inline;
 
 Route::get('/', function () {
     return redirect('dashboard');
 });
+
+Route::get('/enter-name', [RoomController::class, 'enterName']);
+Route::post('/set-name', [RoomController::class, 'setName']);
+Route::get('/chat_room', [RoomController::class, 'ChatRoom']);
+Route::post('/broadcast', [RoomController::class, 'broadcast']);
+Route::post('/receive', [RoomController::class, 'receive']);
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
