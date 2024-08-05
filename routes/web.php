@@ -17,18 +17,18 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     // dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
+
     // cms
     Route::get('/cms', [CMSController::class, 'index'])->name('cms');
     Route::put('/cms/{id}', [CMSController::class, 'update'])->name('cms.update');
-    
+
     //setting
     Route::get('/settings', [CMSController::class, 'setting'])->name('settings');
     Route::get('/api/users', [CMSController::class, 'getUsers']);
     Route::post('/api/add', [CMSController::class, 'store']);
     Route::put('/api/editUser/{id}', [CMSController::class, 'updateUser']);
     Route::delete('/api/deleteUser/{id}', [CMSController::class, 'destroy']);
-    
+
     //profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

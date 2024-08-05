@@ -365,17 +365,31 @@
                     <div class="menu-inner-shadow"></div>
                     <ul class="menu-inner py-1">
                         <!-- Dashboard -->
-                        <li class="menu-item active">
+                        <li class="menu-item @yield('menu-dashboard')">
                             <a href="{{ url('/dashboard') }}" class="menu-link">
                                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                                 <div data-i18n="Analytics">Dashboard</div>
                             </a>
                         </li>
                         <!-- CMS -->
-                        <li class="menu-item">
+                        <li class="menu-item @yield('menu-cms')">
                             <a href="{{ url('/cms') }}" class="menu-link">
                                 <i class="menu-icon tf-icons bx bx-table"></i>
                                 <div data-i18n="Tables">CMS</div>
+                            </a>
+                        </li>
+                        <!-- Setting -->
+                        <li class="menu-item @yield('menu-setting')">
+                            <a href="{{ url('/settings') }}" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-cog"></i>
+                                <div data-i18n="Cog">Setting</div>
+                            </a>
+                        </li>
+                        <!-- Room -->
+                        <li class="menu-item @yield('menu-room')">
+                            <a href="{{ url('/room') }}" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-chat"></i>
+                                <div data-i18n="Chat">Room</div>
                             </a>
                         </li>
                     </ul>
