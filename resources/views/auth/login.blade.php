@@ -1,47 +1,63 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 
-    <form method="POST" action="{{ route('login') }}">
+    <link rel="stylesheet" href="{{ asset('/assets/css/login/stylee.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/assets/vendor/fonts/boxicons.css') }}" />
+
+    <style>
+        body{
+            margin:0;
+            height: 100vh;
+            width: 100vw;
+            overflow:hidden;
+            display: flex;
+            align-items: center;
+            color: {{ $cms->secondary_color }} !important;
+            background-color: #fff;
+            justify-content: center;
+            background-image: url('https://png.pngtree.com/background/20211216/original/pngtree-yellow-vector-abstract-background-picture-image_1524827.jpg');
+            background-size: cover;
+        }
+        .submit{
+            outline: none;
+            border: none;
+            width: 100%;
+            height: 60px;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            background-color: {{ $cms->secondary_color }} !important;
+            background-size: 200%;
+            box-shadow: 3px 3px 8px #b1b1b1,
+                        -3px -3px 8px #fff;
+            transition: .5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="main" style="">
+        <div class="logo"><img style="width:200px;margin-top:30px;" src="{{ asset('/assets/image_content/' . $cms->logo) }}"></div>
+        <div class="title">{{ $cms->website_name }}</div>
+        <form method="POST" action="{{ route('login') }}">
         @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+            <div class="credentials">
+                <div class="username">
+                    <i class='bx bxs-envelope'></i>
+                    <input type="mail" name="email" placeholder="Email" required="">
+                </div>
+                <div class="password">
+                    <i class='bx bxs-lock'></i>
+                    <input type="password" name="password" placeholder="password" required="">
+                </div>
+            </div>
+            <button class="submit">Submit</submit>
+        </form>
+    </div>
+</body>
+</html>
