@@ -467,11 +467,14 @@
                                         <li>
                                             <div class="dropdown-divider"></div>
                                         </li>
-                                        <li>
-                                            <a class="dropdown-item" href="{{ url('logout') }}">
-                                                <i class="bx bx-power-off me-2"></i>
-                                                <span class="align-middle">Log Out</span>
-                                            </a>
+                                        <li style="margin-left:20px;">
+                                            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item" style="background: none; border: none; padding: 0; cursor: pointer;">
+                                                    <i class="bx bx-power-off me-2"></i>
+                                                    <span class="align-middle">Log Out</span>
+                                                </button>
+                                            </form>
                                         </li>
                                     </ul>
                                 </li>
