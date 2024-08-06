@@ -183,7 +183,6 @@
         $('.submit-name').click(function(){
             name = $('.name').val();
             if (name) {
-                $('.qr').show();
                 $('.chat-room').show();
                 $('.name-area').hide();
                 let chatMessages = $('.chat-messages');
@@ -193,6 +192,7 @@
 
         $('.send-msg').click(function(){
             let msg = $('.msg').val();
+            $('.send-msg').html('...');
             $.ajax({
                 url : "/api/send-msg",
                 type : "POST",
@@ -202,8 +202,8 @@
                     name : name
                 },
                 success:function(res){
-                    console.log(res);
                     $('.msg').val('');
+                    $('.send-msg').html('Kirim');
                 }
             })
         });
