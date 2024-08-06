@@ -176,6 +176,7 @@
             $('.field').hide();
             $('.chat-room').show();
             $('.name-area').hide();
+            $('.qr').show();
             localStorage.removeItem('flag-field');
         }
 
