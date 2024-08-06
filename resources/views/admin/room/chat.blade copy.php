@@ -3,10 +3,12 @@
 
 <head>
     <meta charset="utf-8">
-
-
-    <title>Room - {{ $room->code }}</title>
+    <title>{{$cms->website_name}} - {{ $room->code }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link
+        rel="icon"
+        type="image/x-icon"
+        href="{{ asset('/assets/image_content/' . $cms->logo) }}"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -82,6 +84,10 @@
             box-shadow: 0 0.125rem 0.25rem 0 rgba(105, 108, 255, 0.4);
         }
 
+        .disclaimer {
+            color: #fff;
+        }
+
         .navbar-top {
             background-color: {{$cms->secondary_color}} !important;
             color: #fff;
@@ -92,16 +98,18 @@
             z-index: 1030;
             display: flex;
             align-items: center;
+            justify-content: center;
             padding: 0 15px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .navbar-top .navbar-brand {
-            margin-left: 470px; /* Memastikan posisi navbar-brand tetap di tempat */
+            margin-right: auto;
         }
 
         .navbar-top .form-inline {
-            margin-right: 490px; /* Memastikan posisi form-inline tetap di tempat */
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .navbar-top .form-control {
@@ -112,7 +120,7 @@
             background-color: #1E1E1E;
             color: #FFF;
             border: 1px solid #1E1E1E;
-            height: 80px;
+            height: 100px;
         }
 
         .input-group .form-control::placeholder {
@@ -122,7 +130,7 @@
         .input-group .send-msg {
             background-color: #1E1E1E;
             color: #FFF;
-            /* border: 1px solid #1E1E1E; */
+            border: 1px solid #1E1E1E;
         }
 
         .input-group .send-msg:hover {
@@ -134,40 +142,13 @@
             box-shadow: none;
         }
 
-        .upload-btn {
-            background-color: #1E1E1E;
-            color: #FFF;
-            border: 1px solid #1E1E1E;
-        }
-
-        .upload-btn:hover {
-            background-color: #333;
-            border-color: #333;
-        }
-
-        .upload-btn:focus {
-            box-shadow: none;
-        }
-
-        @media (max-width: 768px) {
-            .navbar-top .navbar-brand {
-                margin-left: 0; /* Menghilangkan margin pada layar kecil */
-                text-align: center; /* Memusatkan teks pada layar kecil */
-            }
-
-            .navbar-top .form-inline {
-                margin-right: 0; /* Menghilangkan margin pada layar kecil */
-                display: flex;
-                justify-content: center; /* Memusatkan form pada layar kecil */
-                margin-top: 10px; /* Menambahkan margin atas */
-            }
-        }
 
         @media (max-width: 576px) {
             .input-group .send-msg {
                 padding: 0.375rem;
             }
         }
+
     </style>
 </head>
 
@@ -186,10 +167,10 @@
                         </div>
                         <div style="margin-left:20px;" class="form-group">
                             <input type="checkbox" id="disclaimer" class="form-check-input">
-                            <label style="color:#fff;" for="disclaimer" class="form-check-label disclaimer">
+                            <label for="disclaimer" class="form-check-label disclaimer">
                                 Disclaimer
                             </label><br>
-                            <label style="color:#fff;" for="disclaimer" class="form-check-label disclaimer">
+                            <label for="disclaimer" class="form-check-label disclaimer">
                                 I am responsible for any text and image i see through this platform.
                             </label>
                         </div><br><br>
@@ -217,17 +198,19 @@
             </div>
         </div>
     </div>
+
     <main class="content chat-room">
         <div class="container-fluid p-0">
             <nav class="navbar navbar-light bg-light navbar-top">
-                <a class="navbar-brand" href="#">Navbar</a>
+                <a style="margin-left:255px;" class="navbar-brand" href="#">Navbar</a>
                 <form class="form-inline">
-                    <img src="{{ asset('/assets/image_content/' . $cms->logo) }}" style="width:100px;" alt="Logo">
+                    <img src="{{ asset('/assets/image_content/' . $cms->logo) }}" style="width:100px">
                 </form>
             </nav>
         </div>
-        <div style="display: flex;justify-content: center;align-items: center;" class="container p-0">
-            <div class="card" style="background-color: {{$cms->primary_color}}!important;width:750px;">
+
+        <div class="container p-0">
+            <div class="card" style="background-color: {{$cms->primary_color}}!important;">
                 <div class="row g-0">
                     <div class="col-12">
                         <!-- <div class="py-2 px-4 border-bottom d-none d-lg-block">
@@ -260,21 +243,31 @@
                             </div>
                         </div>
                         <div class="flex-grow-0 py-3 px-4 field">
+                            <!-- <div class="alert alert-info">
+                                Chat akan tampil saat admin sudah <strong>verifikasi</strong>
+                            </div> -->
+                            <!-- <div class="input-group">
+                                <input type="text" class="form-control msg" placeholder="Chat here...">
+                                <button class="btn btn-primary send-msg">Kirim</button>
+                            </div> -->
+                            <!-- Di dalam div.input-group -->
                             <div class="input-group">
-                                <input type="file" id="file-upload" class="form-control-file" style="display: none;">
                                 <input type="text" class="form-control msg" placeholder="Chat here...">
                                 <span class="input-group-append">
-                                    <button class="btn btn-secondary send-msg" type="button">
+                                    <button class="btn btn-primary send-msg" type="button">
                                         <i class="fa fa-paper-plane"></i>
                                     </button>
                                 </span>
                             </div>
+
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
+
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript">
@@ -292,7 +285,7 @@
             $('.field').hide();
             $('.chat-room').show();
             $('.name-area').hide();
-            $('.qr').show();
+            $('.qr').hide(); // Menyembunyikan QR Code jika flag-field sudah ada
             localStorage.removeItem('flag-field');
         }
 
