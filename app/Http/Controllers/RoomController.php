@@ -1,15 +1,39 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Events\PusherBroadcast;
 
+use App\Models\Room;
 use Illuminate\Http\Request;
+use App\Events\PusherBroadcast;
 
 class RoomController extends Controller
 {
     public function index()
     {
-        return view('admin/room/index');
+        $room = Room::orderBy('id','DESC')->get();
+        return view('admin/room/index', compact('room'));
+    }
+
+    public function store(Request $request)
+    {
+        $model = new Room();
+        $model->code = $request->code;
+        $model->save();
+        return redirect('room');
+    }
+
+    public function update(Request $request, $id)
+    {
+        Room::where('id', $id)->update([
+            'code' => $request->code
+        ]);
+        return redirect('room');
+    }
+
+    public function delete($id)
+    {
+        Room::where('id', $id)->delete();
+        return redirect('room');
     }
 
     public function enterName()
