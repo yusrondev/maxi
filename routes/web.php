@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CMSController;
+use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\RoomController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\Yaml\Inline;
@@ -16,6 +17,10 @@ Route::post('/set-name', [RoomController::class, 'setName']);
 Route::get('/chat_room', [RoomController::class, 'ChatRoom']);
 Route::post('/broadcast', [RoomController::class, 'broadcast']);
 Route::post('/receive', [RoomController::class, 'receive']);
+
+// chat
+Route::post('/api/send-msg', [FrontendController::class, 'sendmsg']);
+Route::post('/api/get-msg', [FrontendController::class, 'getmsg']);
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');

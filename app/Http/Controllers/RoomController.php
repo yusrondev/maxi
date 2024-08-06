@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Room;
 use Illuminate\Http\Request;
 use App\Events\PusherBroadcast;
+use App\Models\Message;
 
 class RoomController extends Controller
 {
@@ -73,6 +74,17 @@ class RoomController extends Controller
             'message' => $request->get('message'),
             'isOwnMessage' => $request->get('isOwnMessage'),
             'name' => $request->get('name')
+        ]);
+    }
+
+    public function roomchat($code)
+    {
+        $room = Room::where('code', $code)->first();
+        $model = Message::where('room_id', $room->id)->get();
+
+        return view('admin/room/chat', [
+            'model' => $model,
+            'room' => $room
         ]);
     }
 }

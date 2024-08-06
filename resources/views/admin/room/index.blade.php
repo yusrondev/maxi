@@ -11,10 +11,14 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="push-right">
+                                <a href="" data-link="{{ url('/room/chat/'.$item->code) }}" class="to-room"><i class='bx bx-link'></i></a>
                                 <a data-bs-toggle="modal" data-bs-target="#modalActionDelete{{ $item->id }}" href='{{ url("/room/{$item->id}") }}'><i class='bx bx-trash'></i></a>
                                 <a data-bs-toggle="modal" data-bs-target="#modalActionEdit{{ $item->id }}" href='{{ url("/room/{$item->id}") }}'><i class='bx bx-edit'></i></a>
                             </div>
                             <h2><b>{{ $item->code }}</b></h2>
+                            <div>
+                                {!! QrCode::size(200)->generate(url('/room/chat/'.$item->code)); !!}
+                            </div>
                             <small>Dibuat pada {{ date('d-m-Y', strtotime($item->created_at)) }}</small>
                         </div>
                     </div>
@@ -89,3 +93,12 @@
     </div>
 </div>
 @endsection
+@push('js')
+    <script>
+        $('.to-room').click(function(e){
+            e.preventDefault();
+            localStorage.setItem('flag-field', true);
+            window.open($(this).data('link'), 'blank');
+        })
+    </script>
+@endpush
