@@ -149,6 +149,9 @@
                             </div>
                         </div>
                         <div class="flex-grow-0 py-3 px-4 border-top field">
+                            <div class="alert alert-info">
+                                Chat akan tampil saat admin sudah <strong>verifikasi</strong>
+                            </div>
                             <div class="input-group">
                                 <input type="text" class="form-control msg" placeholder="Pesan...">
                                 <button class="btn btn-primary send-msg">Kirim</button>

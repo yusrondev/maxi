@@ -9,7 +9,7 @@ class FrontendController extends Controller
 {
     public function getmsg(Request $request)
     {
-        $model = Message::where('room_id', $request->id)->get();
+        $model = Message::where('room_id', $request->id)->where('status', 1)->get();
 
         return $model;
     }

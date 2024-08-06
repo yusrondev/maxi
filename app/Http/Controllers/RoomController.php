@@ -80,11 +80,29 @@ class RoomController extends Controller
     public function roomchat($code)
     {
         $room = Room::where('code', $code)->first();
-        $model = Message::where('room_id', $room->id)->get();
+        $model = Message::where('room_id', $room->id)->where('status', 1)->get();
 
         return view('admin/room/chat', [
             'model' => $model,
             'room' => $room
         ]);
+    }
+
+    public function pendingchat($id)
+    {
+        $model = Message::where('room_id', $id)->where('status', 0)->orderBy('id', 'DESC')->get();
+
+        return view('admin/room/pending-chat', [
+            'model' => $model,
+        ]);
+    }
+
+    public function approvechat($id)
+    {
+        $model = Message::where('id', $id)->update([
+            'status' => 1
+        ]);
+
+        return redirect()->back();
     }
 }

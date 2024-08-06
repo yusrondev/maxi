@@ -7,7 +7,7 @@
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="bx bx-chat"></i> Tambah Room</button>
             <div class="row mt-4">
                 @foreach ($room as $item)
-                <div class="col">
+                <div class="col-md-3 mt-2">
                     <div class="card">
                         <div class="card-body">
                             <div class="push-right">
@@ -19,6 +19,7 @@
                             <div>
                                 {!! QrCode::size(200)->generate(url('/room/chat/'.$item->code)); !!}
                             </div>
+                            <a href="{{ url('/room/pending-chat/'.$item->id) }}" class="btn btn-sm btn-secondary mt-3"><i class='bx bx-time-five' ></i> Pending Chat</a><br>
                             <small>Dibuat pada {{ date('d-m-Y', strtotime($item->created_at)) }}</small>
                         </div>
                     </div>
