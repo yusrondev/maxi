@@ -13,7 +13,7 @@
             name="viewport"
             content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
 
-        <title>{{ $cms->website_name }} - Admin</title>
+        <title>{{ @$cms->website_name }} - Admin</title>
 
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -22,7 +22,7 @@
         <link
             rel="icon"
             type="image/x-icon"
-            href="{{ asset('/assets/image_content/' . $cms->logo) }}"/>
+            href="{{ asset('/assets/image_content/' . @$cms->logo) }}"/>
 
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
         <link
@@ -68,17 +68,17 @@
 
         <style>
             .text-primary {
-                color: {{$cms->secondary_color}}!important;
+                color: {{@$cms->secondary_color}}!important;
             }
             .bg-primary {
-                background-color: {{$cms->secondary_color}}!important;
+                background-color: {{@$cms->secondary_color}}!important;
             }
             .dropdown-notifications-item:not(.mark-as-read) .dropdown-notifications-read span {
-                background-color: {{$cms->secondary_color}};
+                background-color: {{@$cms->secondary_color}};
             }
             .bg-label-primary {
                 background-color: #e7e7ff !important;
-                color: {{$cms->secondary_color}}!important;
+                color: {{@$cms->secondary_color}}!important;
             }
             .page-item.active .page-link,
             .page-item.active .page-link:focus,
@@ -86,76 +86,76 @@
             .pagination li.active > a:not(.page-link),
             .pagination li.active > a:not(.page-link):focus,
             .pagination li.active > a:not(.page-link):hover {
-                border-color: {{$cms->secondary_color}};
-                background-color: {{$cms->secondary_color}};
+                border-color: {{@$cms->secondary_color}};
+                background-color: {{@$cms->secondary_color}};
                 color: #fff;
                 box-shadow: 0 0.125rem 0.25rem rgba(105, 108, 255, 0.4);
             }
 
             .progress-bar {
-                background-color: {{$cms->secondary_color}};
+                background-color: {{@$cms->secondary_color}};
                 color: #fff;
                 box-shadow: 0 2px 4px 0 rgba(105, 108, 255, 0.4);
             }
 
             .list-group-item-primary {
                 background-color: #e1e2ff;
-                color: {{$cms->secondary_color}}!important;
+                color: {{@$cms->secondary_color}}!important;
             }
 
             a.list-group-item-primary,
             button.list-group-item-primary {
-                color: {{$cms->secondary_color}};
+                color: {{@$cms->secondary_color}};
             }
             a.list-group-item-primary:focus,
             a.list-group-item-primary:hover,
             button.list-group-item-primary:focus,
             button.list-group-item-primary:hover {
                 background-color: #d6d7f2;
-                color: {{$cms->secondary_color}};
+                color: {{@$cms->secondary_color}};
             }
             a.list-group-item-primary.active,
             button.list-group-item-primary.active {
-                border-color: {{$cms->secondary_color}};
-                background-color: {{$cms->secondary_color}};
-                color: {{$cms->secondary_color}};
+                border-color: {{@$cms->secondary_color}};
+                background-color: {{@$cms->secondary_color}};
+                color: {{@$cms->secondary_color}};
             }
 
             .list-group-item.active,
             .list-group-item.active:focus,
             .list-group-item.active:hover {
-                border-color: {{$cms->secondary_color}};
-                background-color: {{$cms->secondary_color}};
+                border-color: {{@$cms->secondary_color}};
+                background-color: {{@$cms->secondary_color}};
             }
 
             .alert-primary {
                 background-color: #e7e7ff;
                 border-color: #d2d3ff;
-                color: {{$cms->secondary_color}};
+                color: {{@$cms->secondary_color}};
             }
             .alert-primary .btn-close {
                 background-image: url("data:image/svg+xml,%3Csvg width='150px' height='151px' viewBox='0 0 150 151' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cdefs%3E%3Cpolygon id='path-1' points='131.251657 0 74.9933705 56.25 18.7483426 0 0 18.75 56.2450278 75 0 131.25 18.7483426 150 74.9933705 93.75 131.251657 150 150 131.25 93.7549722 75 150 18.75'%3E%3C/polygon%3E%3C/defs%3E%3Cg id='🎨-%5BSetup%5D:-Colors-&amp;-Shadows' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Artboard' transform='translate(-225.000000, -250.000000)'%3E%3Cg id='Icon-Color' transform='translate(225.000000, 250.500000)'%3E%3Cuse fill='%23696cff' xlink:href='%23path-1'%3E%3C/use%3E%3Cuse fill-opacity='0.5' fill='%23696cff' xlink:href='%23path-1'%3E%3C/use%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             }
             .alert-primary .alert-link {
-                color: {{$cms->secondary_color}};
+                color: {{@$cms->secondary_color}};
             }
             .card .alert-primary hr {
-                background-color: {{$cms->secondary_color}}!important;
+                background-color: {{@$cms->secondary_color}}!important;
             }
             .btn-primary {
                 color: #fff;
-                background-color: {{$cms->secondary_color}};
-                border-color: {{$cms->secondary_color}};
+                background-color: {{@$cms->secondary_color}};
+                border-color: {{@$cms->secondary_color}};
                 box-shadow: 0 0.125rem 0.25rem 0 rgba(105, 108, 255, 0.4);
             }
             .btn-outline-primary {
-                color: {{$cms->secondary_color}};
-                border-color: {{$cms->secondary_color}};
+                color: {{@$cms->secondary_color}};
+                border-color: {{@$cms->secondary_color}};
                 background: transparent;
             }
             .btn-outline-primary .badge {
-                background: {{$cms->secondary_color}};
-                border-color: {{$cms->secondary_color}};
+                background: {{@$cms->secondary_color}};
+                border-color: {{@$cms->secondary_color}};
                 color: #fff;
             }
 
@@ -166,19 +166,19 @@
             .show > .btn-outline-primary.dropdown-toggle .badge {
                 background: #fff;
                 border-color: #fff;
-                color: {{$cms->secondary_color}};
+                color: {{@$cms->secondary_color}};
             }
 
             .dropdown-item:not(.disabled).active,
             .dropdown-item:not(.disabled):active {
                 background-color: rgba(105, 108, 255, 0.08);
-                color: {{$cms->secondary_color}}!important;
+                color: {{@$cms->secondary_color}}!important;
             }
 
             .dropdown-menu > li.active:not(.disabled) > a:not(.dropdown-item),
             .dropdown-menu > li:not(.disabled) > a:not(.dropdown-item):active {
                 background-color: rgba(105, 108, 255, 0.08);
-                color: {{$cms->secondary_color}}!important;
+                color: {{@$cms->secondary_color}}!important;
             }
 
             .nav .nav-link:focus,
@@ -189,23 +189,23 @@
             .nav-pills .nav-link.active,
             .nav-pills .nav-link.active:focus,
             .nav-pills .nav-link.active:hover {
-                background-color: {{$cms->secondary_color}};
+                background-color: {{@$cms->secondary_color}};
                 color: #fff;
                 box-shadow: 0 2px 4px 0 rgba(105, 108, 255, 0.4);
             }
 
             .form-control:focus,
             .form-select:focus {
-                border-color: {{$cms->secondary_color}};
+                border-color: {{@$cms->secondary_color}};
             }
 
             .input-group:focus-within .form-control,
             .input-group:focus-within .input-group-text {
-                border-color: {{$cms->secondary_color}};
+                border-color: {{@$cms->secondary_color}};
             }
 
             .form-check-input:focus {
-                border-color: {{$cms->secondary_color}};
+                border-color: {{@$cms->secondary_color}};
                 box-shadow: 0 2px 4px 0 rgba(105, 108, 255, 0.4);
             }
             .form-check-input:disabled {
@@ -213,92 +213,92 @@
             }
             .form-check-input:checked,
             .form-check-input[type=checkbox]:indeterminate {
-                background-color: {{$cms->secondary_color}};
-                border-color: {{$cms->secondary_color}};
+                background-color: {{@$cms->secondary_color}};
+                border-color: {{@$cms->secondary_color}};
                 box-shadow: 0 2px 4px 0 rgba(105, 108, 255, 0.4);
             }
             .custom-option.checked {
-                border: 1px solid{{$cms->secondary_color}};
+                border: 1px solid{{@$cms->secondary_color}};
             }
             .form-control:focus ~ .form-label {
-                border-color: {{$cms->secondary_color}};
+                border-color: {{@$cms->secondary_color}};
             }
             .form-control:focus ~ .form-label::after {
                 border-color: inherit;
             }
             .divider.divider-primary .divider-text:after,
             .divider.divider-primary .divider-text:before {
-                border-color: {{$cms->secondary_color}};
+                border-color: {{@$cms->secondary_color}};
             }
             .navbar.bg-primary {
-                background-color: {{$cms->secondary_color}}!important;
+                background-color: {{@$cms->secondary_color}}!important;
                 color: #e0e1ff;
             }
             .navbar.bg-primary .search-input-wrapper .search-input,
             .navbar.bg-primary .search-input-wrapper .search-toggler {
-                background-color: {{$cms->secondary_color}}!important;
+                background-color: {{@$cms->secondary_color}}!important;
                 color: #e0e1ff;
             }
             .menu.bg-primary {
-                background-color: {{$cms->secondary_color}}!important;
+                background-color: {{@$cms->secondary_color}}!important;
                 color: #e0e1ff;
             }
             .menu.bg-primary .menu-inner-shadow {
-                background: linear-gradient({{ $cms->secondary_color }} 41%, rgba(105, 108, 255, 0.11) 95%, rgba(105, 108, 255, 0));
+                background: linear-gradient({{ @$cms->secondary_color }} 41%, rgba(105, 108, 255, 0.11) 95%, rgba(105, 108, 255, 0));
             }
             .footer.bg-primary {
-                background-color: {{$cms->secondary_color}}!important;
+                background-color: {{@$cms->secondary_color}}!important;
                 color: #e0e1ff;
             }
             .bg-primary.bs-toast .toast-header .btn-close,
             .bg-primary.toast .toast-header .btn-close {
-                background-color: {{$cms->secondary_color}}!important;
+                background-color: {{@$cms->secondary_color}}!important;
                 background-image: url("data:image/svg+xml,%3Csvg width='150px' height='151px' viewBox='0 0 150 151' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cdefs%3E%3Cpolygon id='path-1' points='131.251657 0 74.9933705 56.25 18.7483426 0 0 18.75 56.2450278 75 0 131.25 18.7483426 150 74.9933705 93.75 131.251657 150 150 131.25 93.7549722 75 150 18.75'%3E%3C/polygon%3E%3C/defs%3E%3Cg id='🎨-%5BSetup%5D:-Colors-&amp;-Shadows' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Artboard' transform='translate(-225.000000, -250.000000)'%3E%3Cg id='Icon-Color' transform='translate(225.000000, 250.500000)'%3E%3Cuse fill='%23fff' xlink:href='%23path-1'%3E%3C/use%3E%3Cuse fill-opacity='1' fill='%23fff' xlink:href='%23path-1'%3E%3C/use%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
                 box-shadow: 0 0.1875rem 0.375rem 0 rgba(105, 108, 255, 0.4) !important;
             }
             .form-floating > .form-control:not(:-moz-placeholder-shown) ~ label {
-                color: {{$cms->secondary_color}};
+                color: {{@$cms->secondary_color}};
             }
             .form-floating > .form-control:focus ~ label,
             .form-floating > .form-control:not(:placeholder-shown) ~ label,
             .form-floating > .form-select ~ label {
-                color: {{$cms->secondary_color}};
+                color: {{@$cms->secondary_color}};
             }
             .form-floating > .form-control:-webkit-autofill ~ label {
-                color: {{$cms->secondary_color}};
+                color: {{@$cms->secondary_color}};
             }
             .svg-illustration svg {
-                fill: {{$cms->secondary_color}};
+                fill: {{@$cms->secondary_color}};
             }
             html:not([dir=rtl]) .border-primary,
             html[dir=rtl] .border-primary {
-                border-color: {{$cms->secondary_color}}!important;
+                border-color: {{@$cms->secondary_color}}!important;
             }
             a {
-                color: {{$cms->secondary_color}};
+                color: {{@$cms->secondary_color}};
             }
             a:hover {
                 color: #787bff;
             }
             .fill-primary {
-                fill: {{$cms->secondary_color}};
+                fill: {{@$cms->secondary_color}};
             }
             .bg-menu-theme .menu-inner .menu-sub > .menu-item.active .menu-icon {
-                color: {{$cms->secondary_color}};
+                color: {{@$cms->secondary_color}};
             }
             .bg-menu-theme .menu-inner > .menu-item.active > .menu-link {
-                color: {{$cms->secondary_color}};
+                color: {{@$cms->secondary_color}};
                 background-color: rgba(105, 108, 255, 0.16) !important;
             }
             .bg-menu-theme .menu-inner > .menu-item.active:before {
-                background: {{$cms->secondary_color}};
+                background: {{@$cms->secondary_color}};
             }
             .bg-menu-theme .menu-sub > .menu-item.active > .menu-link:not(.menu-toggle):before {
-                background-color: {{$cms->secondary_color}}!important;
+                background-color: {{@$cms->secondary_color}}!important;
                 border: 3px solid #e7e7ff !important;
             }
             .app-brand .layout-menu-toggle {
-                background-color: {{$cms->secondary_color}};
+                background-color: {{@$cms->secondary_color}};
                 border: 7px solid #f5f5f9;
             }
             .modal {
@@ -355,7 +355,7 @@
                             <span class="app-brand-logo demo">
                                 <img
                                     style="width:130px"
-                                    src="{{ asset('/assets/image_content/'. $cms->logo ) }}">
+                                    src="{{ asset('/assets/image_content/'. @$cms->logo ) }}">
                             </span>
                         </a>
 

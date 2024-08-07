@@ -16,7 +16,7 @@
             overflow:hidden;
             display: flex;
             align-items: center;
-            color: {{ $cms->secondary_color }} !important;
+            color: {{ @$cms->secondary_color }} !important;
             background-color: #fff;
             justify-content: center;
             background-image: url('https://png.pngtree.com/background/20211216/original/pngtree-yellow-vector-abstract-background-picture-image_1524827.jpg');
@@ -32,7 +32,7 @@
             font-size: 20px;
             font-weight: 700;
             text-align: center;
-            background-color: {{ $cms->secondary_color }} !important;
+            background-color: {{ @$cms->secondary_color }} !important;
             background-size: 200%;
             box-shadow: 3px 3px 8px #b1b1b1,
                         -3px -3px 8px #fff;
@@ -42,8 +42,8 @@
 </head>
 <body>
     <div class="main" style="">
-        <div class="logo"><img style="width:200px;margin-top:30px;" src="{{ asset('/assets/image_content/' . $cms->logo) }}"></div>
-        <div class="title">{{ $cms->website_name }}</div>
+        <div class="logo"><img style="width:200px;margin-top:30px;" src="{{ asset('/assets/image_content/' . @$cms->logo) }}"></div>
+        <div class="title">{{ @$cms->website_name }}</div>
         <form method="POST" action="{{ route('login') }}">
         @csrf
             <div class="credentials">
