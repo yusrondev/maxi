@@ -18,7 +18,12 @@
                         <tr>
                             <td>{{ ($key + 1) }}</td>
                             <td>{{ $item->name }}</td>
-                            <td>{{ $item->text }}</td>
+                            <td>
+                                @if ($item->text == "")
+                                    <img width="200px" src='{{ asset("$item->image") }}' alt="">
+                                    @else
+                                    {{ $item->text }}
+                                @endif
                             <td>
                                 <a href="{{ url('/room/approve-chat/'.$item->id) }}" class="btn btn-success"><i class='bx bx-check' ></i></a>
                             </td>

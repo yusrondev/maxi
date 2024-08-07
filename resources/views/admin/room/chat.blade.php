@@ -180,6 +180,11 @@
                 padding: 0.375rem;
             }
         }
+
+        .img-chat{
+            width: 70%;
+            border-radius: 10px;
+        }
     </style>
 </head>
 
@@ -266,7 +271,7 @@
                                     <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
                                         <div class="font-weight-bold mb-1">{{ $item->name }}</div>
                                         @if ($item->image)
-                                            <img src="{{ asset($item->image) }}" alt="Image" style="max-width: 100%; height: auto;">
+                                            <img src="{{ asset($item->image) }}" alt="Image" class="img-chat">
                                         @else
                                             {{ $item->text }}
                                         @endif
@@ -318,22 +323,20 @@
             chatMessages.scrollTop(chatMessages[0].scrollHeight);
         }
 
-        $('#submit-btn').click(function(){
-            name = $('#name').val();
-            let disclaimerChecked = $('#disclaimer').is(':checked');
-            
-            if (name.trim() === '') {
-                alert('Harap masukkan nama Anda.');
-                return;
-            }
-            
-            if (!disclaimerChecked) {
-                alert('Anda harus menyetujui syarat dan ketentuan.');
-                return;
-            }
+            $('#submit-btn').click(function(){
+                name = $('#name').val();
+                let disclaimerChecked = $('#disclaimer').is(':checked');
+                
+                if (name.trim() === '') {
+                    alert('Harap masukkan nama Anda.');
+                    return;
+                }
+                
+                if (!disclaimerChecked) {
+                    alert('Anda harus menyetujui syarat dan ketentuan.');
+                    return;
+                }
 
-            // Simpan flag di localStorage
-            localStorage.setItem('flag-field', 'true');
                 $('.chat-room').show();
                 $('.name-area').hide();
                 $('.qr').hide();  // Menyembunyikan QR Code
@@ -419,26 +422,18 @@
 
                             let avatarUrl = `https://www.booksie.com/files/profiles/22/mr-anonymous.png`;
 
-                            // Create the new message element
-                            // let newMessage = `
-                            //     <div class="chat-message pb-4" data-id="${item.id}">
-                            //         <div>
-                            //             <img src="${avatarUrl}"
-                            //                 class="rounded-circle mr-1" alt="Avatar" width="40" height="40">
-                            //             <div class="text-muted small text-nowrap mt-2">${formattedTime}</div>
-                            //         </div>
-                            //         <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                            //             <div class="font-weight-bold mb-1">${item.name}</div>
-                            //             ${item.text}
-                            //         </div>
-                            //     </div>
-                            // `;
+                            let final_content = "";
+                            if (item.text == "" || item.text == null) {
+                                final_content = `<img class="img-chat" src="{{ asset('${item.image}') }}">`;
+                            }else{
+                                final_content = item.text;
+                            }
 
                             let newMessage = `
                                 <div class="chat-message pb-4" data-id="${item.id}">
                                     <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
                                         <div class="font-weight-bold mb-1">${item.name}</div>
-                                        ${item.text}
+                                        ${final_content}
                                     </div>
                                 </div>
                             `;

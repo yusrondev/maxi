@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('room_id');
             $table->string('name');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->integer('status')->default(0);
             $table->text('text')->nullable();
             $table->timestamps();
