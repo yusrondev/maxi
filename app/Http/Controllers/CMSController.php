@@ -14,8 +14,7 @@ class CMSController extends Controller
 {
     public function index(){
 
-        $data = DB::table('cms')
-        ->get();
+        $data = DB::table('cms')->first();
 
         return view('admin.cms', ['data' => $data]);
     }
