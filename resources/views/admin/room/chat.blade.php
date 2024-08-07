@@ -98,11 +98,17 @@
         }
 
         .navbar-top .navbar-brand {
-            margin-left: 470px;
+            height: auto;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
         }
 
         .navbar-top .form-inline {
-            margin-right: 490px;
+            height: auto;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
         }
 
         .navbar-top .form-control {
@@ -162,27 +168,32 @@
         }
 
         .img_icon{
-            width: 200px;
-            margin-top: 20%;
-            margin-left:40%;
+            max-width: 30%; /* Ensure the image doesn't exceed container width */
+            height: auto; /* Maintain aspect ratio */
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
         }
 
         @media (max-width: 768px) {
             .navbar-top .navbar-brand {
-                margin-left: 105px;
-                text-align: center;
+                /* margin-left:  */
+                /* align-items: center;
+                justify-content: center;
+                text-align: center; */
             }
 
             .navbar-top .form-inline {
-                margin-right: 120px;
-                display: flex;
+                /* margin-right: 10px; */
+                /* display: flex;
                 justify-content: center;
-                margin-top: 10px;
+                margin-top: 10px; */
             }
 
-            .img_icon{
-                margin-left:27%;
-            }
+            /* .img_icon{
+                align-items: center;
+                justify-content: center;
+            } */
 
         }
 
@@ -201,7 +212,7 @@
 
 <body>
 
-    <div class="container name-area">
+    <div style="display:flex;justify-content:center;align-items:center;height:100vh;" class="container name-area">
         <div class="row">
             <div class="col-10 offset-1">
                 <img class="img_icon"
