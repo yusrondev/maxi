@@ -1,4 +1,6 @@
-@include('admin.profile.profileLayout')
+@extends('layouts.backoffice')
+@section('menu-setting', 'active')
+@section('content')
 <div class="content-wrapper">
   <div class="container-xxl flex-grow-1 container-p-y">
       <div class="card">
@@ -14,4 +16,4 @@
         </div>
     </div>
 </div>
-@include('admin.layouts.footer')
+@endsection
