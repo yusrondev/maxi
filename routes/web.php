@@ -25,6 +25,9 @@ Route::post('/api/get-msg', [FrontendController::class, 'getmsg']);
 // room chat
 Route::get('/room/chat/{code}', [RoomController::class, 'roomchat']);
 
+//upload photo
+Route::post('/api/send-file', [FrontendController::class, 'sendFile']);
+
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');

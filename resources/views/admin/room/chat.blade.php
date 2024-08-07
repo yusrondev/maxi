@@ -265,7 +265,11 @@
                                     </div> -->
                                     <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
                                         <div class="font-weight-bold mb-1">{{ $item->name }}</div>
-                                        {{ $item->text }}
+                                        @if ($item->image)
+                                            <img src="{{ asset($item->image) }}" alt="Image" style="max-width: 100%; height: auto;">
+                                        @else
+                                            {{ $item->text }}
+                                        @endif
                                     </div>
                                 </div>
                                 @endforeach
@@ -274,6 +278,7 @@
                         <div class="flex-grow-0 py-3 px-4 field">
                             <div class="input-container">
                                 <textarea id="chat-input" class="form-control msg" rows="3" placeholder="Type your message here..."></textarea>
+                                <input type="file" id="chat-file" class="d-none" />
                                 <button class="btn btn-primary send-upload" type="button">
                                     <i class="fa fa-image"></i>
                                 </button>
@@ -329,15 +334,46 @@
 
             // Simpan flag di localStorage
             localStorage.setItem('flag-field', 'true');
-            $('.chat-room').show();
-            $('.name-area').hide();
-            $('.qr').hide();  // Menyembunyikan QR Code
+                $('.chat-room').show();
+                $('.name-area').hide();
+                $('.qr').hide();  // Menyembunyikan QR Code
 
-            $('#navbar-user-name').text('@' + name);
+                $('#navbar-user-name').text('@' + name);
 
-            let chatMessages = $('.chat-messages');
-            chatMessages.scrollTop(chatMessages[0].scrollHeight);
-        });
+                let chatMessages = $('.chat-messages');
+                chatMessages.scrollTop(chatMessages[0].scrollHeight);
+            });
+
+            $('.send-upload').click(function(){
+                $('#chat-file').click();
+            });
+
+            $('#chat-file').change(function(event) {
+                let file = event.target.files[0];
+                if (file) {
+                    let formData = new FormData();
+                    formData.append('room_id', room_id);
+                    formData.append('name', name);
+                    formData.append('file', file);
+                    
+                    $.ajax({
+                        url: "/api/send-file",
+                        type: "POST",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            // Handle success response
+                            console.log('File uploaded successfully.');
+                            $('#chat-input').val(''); // Clear input after successful upload
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error response
+                            console.log('Error uploading file.');
+                        }
+                    });
+                }
+            });
 
         $('.send-msg').click(function(){
             // let msg = $('.msg').val();

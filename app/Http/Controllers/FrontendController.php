@@ -27,4 +27,25 @@ class FrontendController extends Controller
             'msg' => $request->msg
         ]);
     }
+
+    public function sendFile(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+        ]);
+
+        $file = $request->file('file');
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('uploads'), $filename);
+
+        $message = new Message;
+        $message->room_id = $request->room_id;
+        $message->name = $request->name;
+        $message->text = null;
+        $message->image = 'uploads/' . $filename;
+        $message->save();
+
+        return response()->json(['success' => true]);
+    }
+
 }
