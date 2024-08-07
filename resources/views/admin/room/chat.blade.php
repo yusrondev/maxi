@@ -28,7 +28,8 @@
             display: flex;
             flex-direction: column;
             max-height: 750px;
-            overflow-y: scroll
+            overflow-y: scroll;
+            /* scrollbar-width: none; */
         }
 
         .chat-message-left,
@@ -97,69 +98,80 @@
         }
 
         .navbar-top .navbar-brand {
-            margin-left: 470px; /* Memastikan posisi navbar-brand tetap di tempat */
+            margin-left: 470px;
         }
 
         .navbar-top .form-inline {
-            margin-right: 490px; /* Memastikan posisi form-inline tetap di tempat */
+            margin-right: 490px;
         }
 
         .navbar-top .form-control {
             max-width: 400px;
         }
 
-        .input-group .form-control {
+        .input-container {
+            position: relative;
+        }
+
+        .input-container .form-control.msg {
             background-color: #1E1E1E;
             color: #FFF;
             border: 1px solid #1E1E1E;
-            height: 80px;
+            border-radius: 10px;
+            padding-right: 50px;
+            resize: none;
         }
 
-        .input-group .form-control::placeholder {
-            color: #CCC;
-        }
-
-        .input-group .send-msg {
-            background-color: #1E1E1E;
+        .input-container .send-msg {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            background-color: {{$cms->primary_color}}!important;
             color: #FFF;
-            /* border: 1px solid #1E1E1E; */
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .input-group .send-msg:hover {
-            background-color: #333;
-            border-color: #333;
-        }
-
-        .input-group .send-msg:focus {
-            box-shadow: none;
-        }
-
-        .upload-btn {
-            background-color: #1E1E1E;
+        .input-container .send-upload {
+            position: absolute;
+            right: 60px;
+            bottom: 10px;
+            background-color: {{$cms->primary_color}}!important;
             color: #FFF;
-            border: 1px solid #1E1E1E;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .upload-btn:hover {
-            background-color: #333;
-            border-color: #333;
+        .input-container .send-msg:hover {
+            background-color: {{$cms->primary_color}}!important;
         }
 
-        .upload-btn:focus {
+        .input-container .send-msg:focus {
+            outline: none;
             box-shadow: none;
         }
 
         @media (max-width: 768px) {
             .navbar-top .navbar-brand {
-                margin-left: 0; /* Menghilangkan margin pada layar kecil */
-                text-align: center; /* Memusatkan teks pada layar kecil */
+                margin-left: 0;
+                text-align: center;
             }
 
             .navbar-top .form-inline {
-                margin-right: 0; /* Menghilangkan margin pada layar kecil */
+                margin-right: 0;
                 display: flex;
-                justify-content: center; /* Memusatkan form pada layar kecil */
-                margin-top: 10px; /* Menambahkan margin atas */
+                justify-content: center;
+                margin-top: 10px;
             }
         }
 
@@ -220,7 +232,7 @@
     <main class="content chat-room">
         <div class="container-fluid p-0">
             <nav class="navbar navbar-light bg-light navbar-top">
-                <a class="navbar-brand" href="#">Navbar</a>
+                <a id="navbar-user-name" class="navbar-brand" href="#"></a>
                 <form class="form-inline">
                     <img src="{{ asset('/assets/image_content/' . $cms->logo) }}" style="width:100px;" alt="Logo">
                 </form>
@@ -260,14 +272,14 @@
                             </div>
                         </div>
                         <div class="flex-grow-0 py-3 px-4 field">
-                            <div class="input-group">
-                                <input type="file" id="file-upload" class="form-control-file" style="display: none;">
-                                <input type="text" class="form-control msg" placeholder="Chat here...">
-                                <span class="input-group-append">
-                                    <button class="btn btn-secondary send-msg" type="button">
-                                        <i class="fa fa-paper-plane"></i>
-                                    </button>
-                                </span>
+                            <div class="input-container">
+                                <textarea id="chat-input" class="form-control msg" rows="3" placeholder="Type your message here..."></textarea>
+                                <button class="btn btn-primary send-upload" type="button">
+                                    <i class="fa fa-image"></i>
+                                </button>
+                                <button class="btn btn-primary send-msg" type="button">
+                                    <i class="fa fa-paper-plane"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -296,6 +308,11 @@
             localStorage.removeItem('flag-field');
         }
 
+        function scrollToBottom() {
+            let chatMessages = $('.chat-messages');
+            chatMessages.scrollTop(chatMessages[0].scrollHeight);
+        }
+
         $('#submit-btn').click(function(){
             name = $('#name').val();
             let disclaimerChecked = $('#disclaimer').is(':checked');
@@ -315,12 +332,16 @@
             $('.chat-room').show();
             $('.name-area').hide();
             $('.qr').hide();  // Menyembunyikan QR Code
+
+            $('#navbar-user-name').text('@' + name);
+
             let chatMessages = $('.chat-messages');
             chatMessages.scrollTop(chatMessages[0].scrollHeight);
         });
 
         $('.send-msg').click(function(){
-            let msg = $('.msg').val();
+            // let msg = $('.msg').val();
+            let msg = $('#chat-input').val();
             $('.send-msg').html('...');
             $.ajax({
                 url : "/api/send-msg",
@@ -332,7 +353,7 @@
                 },
                 success:function(res){
                     $('.msg').val('');
-                    $('.send-msg').html('Kirim');
+                    $('.send-msg').html('<i class="fa fa-paper-plane"></i>');
                 }
             })
         });
@@ -363,13 +384,22 @@
                             let avatarUrl = `https://www.booksie.com/files/profiles/22/mr-anonymous.png`;
 
                             // Create the new message element
+                            // let newMessage = `
+                            //     <div class="chat-message pb-4" data-id="${item.id}">
+                            //         <div>
+                            //             <img src="${avatarUrl}"
+                            //                 class="rounded-circle mr-1" alt="Avatar" width="40" height="40">
+                            //             <div class="text-muted small text-nowrap mt-2">${formattedTime}</div>
+                            //         </div>
+                            //         <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                            //             <div class="font-weight-bold mb-1">${item.name}</div>
+                            //             ${item.text}
+                            //         </div>
+                            //     </div>
+                            // `;
+
                             let newMessage = `
                                 <div class="chat-message pb-4" data-id="${item.id}">
-                                    <div>
-                                        <img src="${avatarUrl}"
-                                            class="rounded-circle mr-1" alt="Avatar" width="40" height="40">
-                                        <div class="text-muted small text-nowrap mt-2">${formattedTime}</div>
-                                    </div>
                                     <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
                                         <div class="font-weight-bold mb-1">${item.name}</div>
                                         ${item.text}
