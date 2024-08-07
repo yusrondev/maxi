@@ -161,18 +161,29 @@
             box-shadow: none;
         }
 
+        .img_icon{
+            width: 200px;
+            margin-top: 20%;
+            margin-left:40%;
+        }
+
         @media (max-width: 768px) {
             .navbar-top .navbar-brand {
-                margin-left: 0;
+                margin-left: 105px;
                 text-align: center;
             }
 
             .navbar-top .form-inline {
-                margin-right: 0;
+                margin-right: 120px;
                 display: flex;
                 justify-content: center;
                 margin-top: 10px;
             }
+
+            .img_icon{
+                margin-left:27%;
+            }
+
         }
 
         @media (max-width: 576px) {
@@ -193,8 +204,7 @@
     <div class="container name-area">
         <div class="row">
             <div class="col-10 offset-1">
-                <img
-                    style="width:200px; margin-top: 20%; margin-left:38%;"
+                <img class="img_icon"
                     src="{{ asset('/assets/image_content/'. $cms->logo ) }}">
                 <div style="margin-top: 10%; background-color: {{$cms->primary_color}}!important;" class="card">
                     <div class="card-body">
