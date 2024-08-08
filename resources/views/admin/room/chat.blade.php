@@ -5,13 +5,19 @@
     <meta charset="utf-8">
 
 
-    <title>Room - {{ $room->code }}</title>
+    <title>{{ @$cms->website_name }} - {{ $room->code }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link
+        rel="icon"
+        type="image/x-icon"
+        href="{{ asset('/assets/image_content/' . @$cms->logo) }}"/>
     <style type="text/css">
         body {
+            height: 100%;
+            margin: 0;
             margin-top: 100px;
             background-color: {{$cms->primary_color}}!important;
         }
@@ -168,11 +174,40 @@
         }
 
         .img_icon{
-            max-width: 30%; /* Ensure the image doesn't exceed container width */
-            height: auto; /* Maintain aspect ratio */
+            max-width: 30%;
+            height: auto;
             margin-left: auto;
             margin-right: auto;
             display: block;
+        }
+
+        .img-preview {
+            max-width: 30%;
+            max-height: 150px;
+            border-radius: 10px;
+            display: block;
+            float: right;
+            margin-left: 10px;
+        }
+
+        #remove-preview {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            border: none;
+            background-color: transparent;
+            color: {{$cms->secondary_color}}!important;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #preview-container {
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .d-none {
+            display: none;
         }
 
         @media (max-width: 768px) {
@@ -303,6 +338,12 @@
                         </div>
                         <div class="flex-grow-0 py-3 px-4 field">
                             <div class="input-container">
+                                <div id="preview-container" class="d-none">
+                                    <img id="preview-img" class="img-preview" src="" alt="Image preview">
+                                    <button id="remove-preview" class="btn btn-danger btn-sm">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>
                                 <textarea id="chat-input" class="form-control msg" rows="3" placeholder="Type your message here..."></textarea>
                                 <input type="file" id="chat-file" class="d-none" />
                                 <button class="btn btn-primary send-upload" type="button">
@@ -375,103 +416,114 @@
 
             $('#chat-file').change(function(event) {
                 let file = event.target.files[0];
+                console.log("File selected:", file);
                 if (file) {
-                    let formData = new FormData();
-                    formData.append('room_id', room_id);
-                    formData.append('name', name);
-                    formData.append('file', file);
-                    
-                    $.ajax({
-                        url: "/api/send-file",
-                        type: "POST",
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        success: function(response) {
-                            // Handle success response
-                            console.log('File uploaded successfully.');
-                            $('#chat-input').val(''); // Clear input after successful upload
-                        },
-                        error: function(xhr, status, error) {
-                            // Handle error response
-                            console.log('Error uploading file.');
-                        }
-                    });
+                    let reader = new FileReader();
+                    reader.onload = function(e) {
+                        console.log("File read:", e.target.result);
+                        $('#preview-img').attr('src', e.target.result);
+                        $('#preview-container').removeClass('d-none');
+                    };
+                    reader.readAsDataURL(file);
                 }
             });
 
-        $('.send-msg').click(function(){
-            // let msg = $('.msg').val();
-            let msg = $('#chat-input').val();
-            $('.send-msg').html('...');
-            $.ajax({
-                url : "/api/send-msg",
-                type : "POST",
-                data : {
-                    room_id : room_id,
-                    msg : msg,
-                    name : name
-                },
-                success:function(res){
-                    $('.msg').val('');
-                    $('.send-msg').html('<i class="fa fa-paper-plane"></i>');
+            // Remove image preview
+            $('#remove-preview').click(function() {
+                $('#preview-img').attr('src', '');
+                $('#chat-file').val('');
+                $('#preview-container').addClass('d-none');
+            });
+
+            // Send file
+            $('.send-upload').click(function() {
+                $('#chat-file').click();
+            });
+
+
+            $('.send-msg').click(function() {
+                let msg = $('#chat-input').val();
+                let file = $('#chat-file')[0].files[0];
+                
+                let formData = new FormData();
+                formData.append('room_id', room_id);
+                formData.append('name', name);
+                formData.append('msg', msg);
+                
+                if (file) {
+                    formData.append('file', file);
                 }
-            })
-        });
 
-        // autoload
-        setInterval(() => {
-            $.ajax({
-                url : "/api/get-msg",
-                type : "POST",
-                data : {
-                    id : room_id,
-                },
-                success:function(res){
-                    let shouldScroll = false;
-                    res.forEach(item => {
-                        // Check if the message already exists
-                        if (!$(`.chat-message[data-id="${item.id}"]`).length) {
-
-                            shouldScroll = true;
-                            // Extract and format the hour from created_at
-                            let date = new Date(item.created_at);
-                            let hours = date.getHours();
-                            let minutes = date.getMinutes();
-                            hours = hours;
-                            minutes = minutes < 10 ? '0'+minutes : minutes;
-                            let formattedTime = hours + ':' + minutes;
-
-                            let avatarUrl = `https://www.booksie.com/files/profiles/22/mr-anonymous.png`;
-
-                            let final_content = "";
-                            if (item.text == "" || item.text == null) {
-                                final_content = `<img class="img-chat" src="{{ asset('${item.image}') }}">`;
-                            }else{
-                                final_content = item.text;
-                            }
-
-                            let newMessage = `
-                                <div class="chat-message pb-4" data-id="${item.id}">
-                                    <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                                        <div class="font-weight-bold mb-1">${item.name}</div>
-                                        ${final_content}
-                                    </div>
-                                </div>
-                            `;
-
-                            // Append the new message
-                            $('.chat-messages').append(newMessage);
-                        }
-                    });
-                    if (shouldScroll) {
-                        let chatMessages = $('.chat-messages');
-                        chatMessages.scrollTop(chatMessages[0].scrollHeight);
+                $.ajax({
+                    url: "/api/send-file",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        $('#chat-input').val('');
+                        $('#chat-file').val('');
+                        $('#preview-container').addClass('d-none');
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('Error uploading file.');
                     }
-                }
-            })
+                });
+            });
 
-        }, 500);
+            // autoload
+            setInterval(() => {
+                $.ajax({
+                    url : "/api/get-msg",
+                    type : "POST",
+                    data : {
+                        id : room_id,
+                    },
+                    success:function(res){
+                        let shouldScroll = false;
+                        res.forEach(item => {
+                            // Check if the message already exists
+                            if (!$(`.chat-message[data-id="${item.id}"]`).length) {
+
+                                shouldScroll = true;
+                                // Extract and format the hour from created_at
+                                let date = new Date(item.created_at);
+                                let hours = date.getHours();
+                                let minutes = date.getMinutes();
+                                hours = hours;
+                                minutes = minutes < 10 ? '0'+minutes : minutes;
+                                let formattedTime = hours + ':' + minutes;
+
+                                let avatarUrl = `https://www.booksie.com/files/profiles/22/mr-anonymous.png`;
+
+                                let final_content = "";
+                                if (item.text == "" || item.text == null) {
+                                    final_content = `<img class="img-chat" src="{{ asset('${item.image}') }}">`;
+                                }else{
+                                    final_content = item.text;
+                                }
+
+                                let newMessage = `
+                                    <div class="chat-message pb-4" data-id="${item.id}">
+                                        <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                                            <div class="font-weight-bold mb-1">${item.name}</div>
+                                            ${final_content}
+                                        </div>
+                                    </div>
+                                `;
+
+                                // Append the new message
+                                $('.chat-messages').append(newMessage);
+                            }
+                        });
+                        if (shouldScroll) {
+                            let chatMessages = $('.chat-messages');
+                            chatMessages.scrollTop(chatMessages[0].scrollHeight);
+                        }
+                    }
+                })
+
+            }, 500);
     </script>
 </body>
 
