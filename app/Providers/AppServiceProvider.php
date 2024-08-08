@@ -21,11 +21,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $cms = DB::table('cms')->orderBy('id', 'DESC')->first();
+        // @$cms = DB::table('cms')->orderBy('id', 'DESC')->first();
 
-        $chatContents = DB::table('chat_contents')->first();
+        // @$chatContents = DB::table('chat_contents')->first();
 
-        View::share('cms', $cms);
-        View::share('chat_contents', $chatContents);
+        // View::share('cms', @$cms);
+        // View::share('chat_contents', @$chatContents);
     }
 }
