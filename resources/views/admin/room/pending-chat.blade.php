@@ -68,7 +68,7 @@
                         if (!$(`.row-table[data-id="${item.id}"]`).length) {
                             let final_content = "";
                             if (item.text == "" || item.text == null) {
-                                final_content = `<img class="img-chat" src="{{ asset('${item.image}') }}">`;
+                                final_content = `<img width="200px" src="{{ asset('${item.image}') }}">`;
                             }else{
                                 final_content = item.text;
                             }
