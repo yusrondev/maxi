@@ -324,12 +324,14 @@
                                             class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
                                         <div class="text-muted small text-nowrap mt-2">{{ date('H:i', strtotime($item->created_at)) }}</div>
                                     </div> -->
-                                    <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                                        <div class="font-weight-bold mb-1">{{ $item->name }}</div>
+                                    <div style="background-color: {{ $chat_contents->chat_color }}" class="flex-shrink-1 rounded py-2 px-3 mr-3">
+                                        <div style="font-family: {{$chat_contents->username_font}}" class="font-weight-bold mb-1">{{ $item->name }}</div>
                                         @if ($item->image)
                                             <img src="{{ asset($item->image) }}" alt="Image" class="img-chat">
                                         @else
+                                        <div style="font-family: {{$chat_contents->chat_font}}; color: {{ $chat_contents->username_color }}">
                                             {{ $item->text }}
+                                        </div>
                                         @endif
                                     </div>
                                 </div>

@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cms', function (Blueprint $table) {
+        Schema::create('chat_contents', function (Blueprint $table) {
             $table->id();
-            $table->string('website_name');
-            $table->string('logo');
-            $table->string('primary_color');
-            $table->string('secondary_color');
+            $table->text('username_font');
+            $table->text('chat_font');
+            $table->text('username_color');
+            $table->text('chat_color');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cms');
+        //
     }
 };

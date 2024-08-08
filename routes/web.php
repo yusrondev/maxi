@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     // cms
     Route::get('/cms', [CMSController::class, 'index'])->name('cms');
     Route::put('/cms/{id}', [CMSController::class, 'update'])->name('cms.update');
+    Route::put('/cms/chat_content/{id}', [CMSController::class, 'chatContent_update'])->name('chat_content.update');
 
     //setting
     Route::get('/settings', [CMSController::class, 'setting'])->name('settings');

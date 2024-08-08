@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Cms;
 use App\Models\User;
+use App\Models\Chat_content;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
@@ -15,8 +16,9 @@ class CMSController extends Controller
     public function index(){
 
         $data = DB::table('cms')->first();
+        $data_chat = DB::table('chat_contents')->first();
 
-        return view('admin.cms', ['data' => $data]);
+        return view('admin.cms', ['data' => $data, 'data_chat' => $data_chat]);
     }
 
     public function update(Request $request, $id)
@@ -44,6 +46,27 @@ class CMSController extends Controller
             $logo->move(public_path('/assets/image_content'), $logoName);
             $cms->logo = $logoName;
         }
+
+        $cms->save();
+
+        return response()->json(['message' => 'Data updated successfully!']);
+    }
+
+    public function chatContent_update(Request $request, $id)
+    {
+        $request->validate([
+            'username_font' => 'required|string|max:255',
+            'chat_font' => 'required|string|max:255',
+            'username_color' => 'required|string|max:255',
+            'chat_color' => 'required|string|max:255',
+        ]);
+
+        $cms = Chat_content::findOrFail($id);
+
+        $cms->username_font = $request->input('username_font');
+        $cms->chat_font = $request->input('chat_font');
+        $cms->username_color = $request->input('username_color');
+        $cms->chat_color = $request->input('chat_color');
 
         $cms->save();
 
