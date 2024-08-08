@@ -335,7 +335,8 @@
             $('.field').hide();
             $('.chat-room').show();
             $('.name-area').hide();
-            $('.qr').show();
+            $('.qr').hide();
+            $('.navbar').hide();
             localStorage.removeItem('flag-field');
         }
 
