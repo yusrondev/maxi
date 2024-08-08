@@ -88,12 +88,16 @@ class RoomController extends Controller
         ]);
     }
 
-    public function pendingchat($id)
+    public function pendingchat(Request $request, $id)
     {
         $model = Message::where('room_id', $id)->where('status', 0)->orderBy('id', 'DESC')->get();
+        if ($request->ajax()) {
+            return $model;
+        }
 
         return view('admin/room/pending-chat', [
             'model' => $model,
+            'id' => $id
         ]);
     }
 
