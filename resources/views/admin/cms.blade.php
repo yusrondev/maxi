@@ -14,7 +14,7 @@
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="website" role="tabpanel" aria-labelledby="website-tab">
-                    <form id="updateForm_{{ $data_chat->id }}" action="{{ route('cms.update', $data_chat->id) }}" method="POST" enctype="multipart/form-data">
+                    <form id="updateForm_{{ $data->id }}" action="{{ route('cms.update', $data->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 

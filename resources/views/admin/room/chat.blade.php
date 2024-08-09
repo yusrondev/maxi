@@ -5,19 +5,13 @@
     <meta charset="utf-8">
 
 
-    <title>{{ @$cms->website_name }} - {{ $room->code }}</title>
+    <title>Room - {{ $room->code }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link
-        rel="icon"
-        type="image/x-icon"
-        href="{{ asset('/assets/image_content/' . @$cms->logo) }}"/>
     <style type="text/css">
         body {
-            height: 100%;
-            margin: 0;
             margin-top: 100px;
             background-color: {{$cms->primary_color}}!important;
         }
@@ -122,7 +116,10 @@
         }
 
         .input-container {
-            position: relative;
+            position: fixed;
+            bottom: 0;
+            width: 41%;
+            /* position: relative; */
         }
 
         .input-container .form-control.msg {
@@ -174,40 +171,11 @@
         }
 
         .img_icon{
-            max-width: 30%;
-            height: auto;
+            max-width: 30%; /* Ensure the image doesn't exceed container width */
+            height: auto; /* Maintain aspect ratio */
             margin-left: auto;
             margin-right: auto;
             display: block;
-        }
-
-        .img-preview {
-            max-width: 30%;
-            max-height: 150px;
-            border-radius: 10px;
-            display: block;
-            float: right;
-            margin-left: 10px;
-        }
-
-        #remove-preview {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            border: none;
-            background-color: transparent;
-            color: {{$cms->secondary_color}}!important;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        #preview-container {
-            margin-bottom: 10px;
-            position: relative;
-        }
-
-        .d-none {
-            display: none;
         }
 
         @media (max-width: 768px) {
@@ -241,6 +209,29 @@
         .img-chat{
             width: 70%;
             border-radius: 10px;
+        }
+
+        .bg-custom{
+            background-color: #ced6e0 !important;
+        }
+
+        #image-preview{
+            max-width: 300px;
+            max-height: 300px;
+            float: right;
+            margin-right: 26px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .area-image {
+            display: none;
+            position: fixed;
+            bottom: 100px;
+            right: 500px;
+            z-index: 1000;
+            max-width: 300px;
+            max-height: 300px;
         }
     </style>
 </head>
@@ -324,28 +315,38 @@
                                             class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
                                         <div class="text-muted small text-nowrap mt-2">{{ date('H:i', strtotime($item->created_at)) }}</div>
                                     </div> -->
-                                    <div style="background-color: {{ $chat_contents->chat_color }}" class="flex-shrink-1 rounded py-2 px-3 mr-3">
-                                        <div style="font-family: {{$chat_contents->username_font}}" class="font-weight-bold mb-1">{{ $item->name }}</div>
+                                    <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                                        <div class="font-weight-bold mb-1">{{ $item->name }}</div>
                                         @if ($item->image)
                                             <img src="{{ asset($item->image) }}" alt="Image" class="img-chat">
                                         @else
-                                        <div style="font-family: {{$chat_contents->chat_font}}; color: {{ $chat_contents->username_color }}">
                                             {{ $item->text }}
-                                        </div>
                                         @endif
                                     </div>
+                                    @if (!empty($item->reply))
+                                        @foreach ($item->reply as $replyitem)
+                                            <div class="flex-shrink-1 bg-custom text-dark rounded py-2 px-3 mr-3 mt-1 ml-3">
+                                                <div class="font-weight-medium mb-1"><i>Balasan dari <b>Admin</b> kepada {{ $item->name }}</i></div>
+                                                {{ @$replyitem->text }}
+                                            </div>
+                                        @endforeach
+                                    @endif
                                 </div>
                                 @endforeach
                             </div>
                         </div>
+                        <div class="area-image">
+                            <div class="row">
+                                <img id="image-preview" src="" alt="Image Preview"/>
+                            </div>
+                            <div class="row">
+                                <button type="button" class="btn mx-1 change-image btn-sm btn-primary"><i class='fa fa-image' ></i></button>
+                                <button type="button" class="btn mx-1 remove-image btn-sm btn-danger"><i class='fa fa-trash' ></i></button>
+                                <button type="button" class="btn mx-1 upload-image btn-sm btn-success"><i class='fa fa-check' ></i></button>
+                            </div>
+                        </div>
                         <div class="flex-grow-0 py-3 px-4 field">
                             <div class="input-container">
-                                <div id="preview-container" class="d-none">
-                                    <img id="preview-img" class="img-preview" src="" alt="Image preview">
-                                    <button id="remove-preview" class="btn btn-danger btn-sm">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </div>
                                 <textarea id="chat-input" class="form-control msg" rows="3" placeholder="Type your message here..."></textarea>
                                 <input type="file" id="chat-file" class="d-none" />
                                 <button class="btn btn-primary send-upload" type="button">
@@ -365,6 +366,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript">
         let flag_field = localStorage.getItem('flag-field');
+        let flag_upload = false;
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -388,144 +390,176 @@
             chatMessages.scrollTop(chatMessages[0].scrollHeight);
         }
 
-            $('#submit-btn').click(function(){
-                name = $('#name').val();
-                let disclaimerChecked = $('#disclaimer').is(':checked');
-                
-                if (name.trim() === '') {
-                    alert('Harap masukkan nama Anda.');
-                    return;
-                }
-                
-                if (!disclaimerChecked) {
-                    alert('Anda harus menyetujui syarat dan ketentuan.');
-                    return;
-                }
+        $('body').on('click', '.upload-image', function(){
+            flag_upload = true;
+            $('#chat-file').trigger('change');
+        });
 
-                $('.chat-room').show();
-                $('.name-area').hide();
-                $('.qr').hide();  // Menyembunyikan QR Code
+        $('body').on('click', '.change-image', function(){
+            $('#chat-file').click();
+        });
 
-                $('#navbar-user-name').text('@' + name);
+        $('body').on('click', '.remove-image', function(){
+            $('.area-image').hide();
+            $('#chat-input').val('');
+        });
 
-                let chatMessages = $('.chat-messages');
-                chatMessages.scrollTop(chatMessages[0].scrollHeight);
-            });
+        $('#submit-btn').click(function(){
+            name = $('#name').val();
+            let disclaimerChecked = $('#disclaimer').is(':checked');
+            
+            if (name.trim() === '') {
+                alert('Harap masukkan nama Anda.');
+                return;
+            }
+            
+            if (!disclaimerChecked) {
+                alert('Anda harus menyetujui syarat dan ketentuan.');
+                return;
+            }
 
-            $('.send-upload').click(function(){
-                $('#chat-file').click();
-            });
+            $('.chat-room').show();
+            $('.name-area').hide();
+            $('.qr').hide();  // Menyembunyikan QR Code
 
-            $('#chat-file').change(function(event) {
-                let file = event.target.files[0];
-                console.log("File selected:", file);
-                if (file) {
+            $('#navbar-user-name').text('@' + name);
+
+            let chatMessages = $('.chat-messages');
+            chatMessages.scrollTop(chatMessages[0].scrollHeight);
+        });
+
+        $('.send-upload').click(function(){
+            $('#chat-file').click();
+        });
+
+        $('#chat-file').change(function(event) {
+            let file = event.target.files[0];
+            if (file) {
+                // Check if the selected file is an image
+                if (file.type.startsWith('image/') && flag_upload == false) {
                     let reader = new FileReader();
+                    
+                    // Load the image and display it in an img tag
                     reader.onload = function(e) {
-                        console.log("File read:", e.target.result);
-                        $('#preview-img').attr('src', e.target.result);
-                        $('#preview-container').removeClass('d-none');
+                        $('#image-preview').attr('src', e.target.result);
+                        $('#image-preview').show(); // Make sure the image preview is visible
+                        $('.area-image').show();
                     };
-                    reader.readAsDataURL(file);
+
+                    reader.readAsDataURL(file); // Convert the file to a data URL
                 }
-            });
 
-            // Remove image preview
-            $('#remove-preview').click(function() {
-                $('#preview-img').attr('src', '');
-                $('#chat-file').val('');
-                $('#preview-container').addClass('d-none');
-            });
-
-            // Send file
-            $('.send-upload').click(function() {
-                $('#chat-file').click();
-            });
-
-
-            $('.send-msg').click(function() {
-                let msg = $('#chat-input').val();
-                let file = $('#chat-file')[0].files[0];
-                
                 let formData = new FormData();
                 formData.append('room_id', room_id);
                 formData.append('name', name);
-                formData.append('msg', msg);
-                
-                if (file) {
-                    formData.append('file', file);
-                }
+                formData.append('file', file);
 
-                $.ajax({
-                    url: "/api/send-file",
-                    type: "POST",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(response) {
-                        $('#chat-input').val('');
-                        $('#chat-file').val('');
-                        $('#preview-container').addClass('d-none');
-                    },
-                    error: function(xhr, status, error) {
-                        console.log('Error uploading file.');
-                    }
-                });
-            });
-
-            // autoload
-            setInterval(() => {
-                $.ajax({
-                    url : "/api/get-msg",
-                    type : "POST",
-                    data : {
-                        id : room_id,
-                    },
-                    success:function(res){
-                        let shouldScroll = false;
-                        res.forEach(item => {
-                            // Check if the message already exists
-                            if (!$(`.chat-message[data-id="${item.id}"]`).length) {
-
-                                shouldScroll = true;
-                                // Extract and format the hour from created_at
-                                let date = new Date(item.created_at);
-                                let hours = date.getHours();
-                                let minutes = date.getMinutes();
-                                hours = hours;
-                                minutes = minutes < 10 ? '0'+minutes : minutes;
-                                let formattedTime = hours + ':' + minutes;
-
-                                let avatarUrl = `https://www.booksie.com/files/profiles/22/mr-anonymous.png`;
-
-                                let final_content = "";
-                                if (item.text == "" || item.text == null) {
-                                    final_content = `<img class="img-chat" src="{{ asset('${item.image}') }}">`;
-                                }else{
-                                    final_content = item.text;
-                                }
-
-                                let newMessage = `
-                                    <div class="chat-message pb-4" data-id="${item.id}">
-                                        <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                                            <div class="font-weight-bold mb-1">${item.name}</div>
-                                            ${final_content}
-                                        </div>
-                                    </div>
-                                `;
-
-                                // Append the new message
-                                $('.chat-messages').append(newMessage);
-                            }
-                        });
-                        if (shouldScroll) {
-                            let chatMessages = $('.chat-messages');
-                            chatMessages.scrollTop(chatMessages[0].scrollHeight);
+                if (flag_upload == true) {
+                    $.ajax({
+                        url: "/api/send-file",
+                        type: "POST",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            // Handle success response
+                            console.log('File uploaded successfully.');
+                            flag_upload = false;
+                            $('.area-image').hide();
+                            $('#chat-input').val(''); // Clear input after successful upload
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error response
+                            console.log('Error uploading file.');
                         }
-                    }
-                })
+                    });
+                }
+            }
+        });
 
-            }, 500);
+        $('.send-msg').click(function(){
+            // let msg = $('.msg').val();
+            let msg = $('#chat-input').val();
+            $('.send-msg').html('...');
+            $.ajax({
+                url : "/api/send-msg",
+                type : "POST",
+                data : {
+                    room_id : room_id,
+                    msg : msg,
+                    name : name
+                },
+                success:function(res){
+                    $('.msg').val('');
+                    $('.send-msg').html('<i class="fa fa-paper-plane"></i>');
+                }
+            })
+        });
+
+        // autoload
+        setInterval(() => {
+            $.ajax({
+                url : "/api/get-msg",
+                type : "POST",
+                data : {
+                    id : room_id,
+                },
+                success:function(res){
+                    let shouldScroll = false;
+                    res.forEach(item => {
+                        // Check if the message already exists
+                        if (!$(`.chat-message[data-id="${item.id}"]`).length) {
+
+                            console.log(item);
+
+                            shouldScroll = true;
+                            // Extract and format the hour from created_at
+                            let date = new Date(item.created_at);
+                            let hours = date.getHours();
+                            let minutes = date.getMinutes();
+                            hours = hours;
+                            minutes = minutes < 10 ? '0'+minutes : minutes;
+                            let formattedTime = hours + ':' + minutes;
+
+                            let avatarUrl = `https://www.booksie.com/files/profiles/22/mr-anonymous.png`;
+
+                            let final_content = "";
+                            if (item.text == "" || item.text == null) {
+                                final_content = `<img class="img-chat" src="{{ asset('${item.image}') }}">`;
+                            }else{
+                                final_content = item.text;
+                            }
+
+                            let newMessage = `
+                                <div class="chat-message mt-3" data-id="${item.id}">
+                                    <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                                        <div class="font-weight-bold mb-1">${item.name}</div>
+                                        ${final_content}
+                                    </div>
+                                </div>
+                            `;
+
+                            if(item.reply != null){
+                                $.each(item.reply, function(k, v){
+                                    newMessage += `<div class="flex-shrink-1 bg-custom text-dark rounded py-2 px-3 mr-3 mt-1 ml-3">
+                                                        <div class="font-weight-medium mb-1"><i>Balasan dari <b>Admin</b> kepada ${item.name}</i></div>
+                                                        ${v.text}
+                                                    </div>`;
+                                });
+                            }
+
+                            // Append the new message
+                            $('.chat-messages').append(newMessage);
+                        }
+                    });
+                    if (shouldScroll) {
+                        let chatMessages = $('.chat-messages');
+                        chatMessages.scrollTop(chatMessages[0].scrollHeight);
+                    }
+                }
+            })
+
+        }, 500);
     </script>
 </body>
 
