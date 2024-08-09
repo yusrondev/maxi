@@ -1,374 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="utf-8">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Room -
+            {{ $room->code }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    </head>
 
-
-    <title>Room - {{ $room->code }}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style type="text/css">
+    <style>
         body {
-            overflow-y: hidden;
-            margin-top: 100px;
-            background-color: {{$cms->primary_color}}!important;
-        }
-
-        .chat-online {
-            color: #34ce57
-        }
-
-        .chat-offline {
-            color: #e4606d
-        }
-
-        .chat-messages {
-            display: flex;
-            flex-direction: column;
-            max-height:750px;
-            overflow-y: scroll;
-            scrollbar-width: none; 
-        }
-
-        .chat-message-left,
-        .chat-message-right {
-            display: flex;
-            flex-shrink: 0
-        }
-
-        .chat-message-left {
-            margin-right: auto
-        }
-
-        .chat-message-right {
-            flex-direction: row-reverse;
-            margin-left: auto
-        }
-
-        .py-3 {
-            padding-top: 1rem !important;
-            padding-bottom: 1rem !important;
-        }
-
-        .px-4 {
-            padding-right: 1.5rem !important;
-            padding-left: 1.5rem !important;
-        }
-
-        .flex-grow-0 {
-            flex-grow: 0 !important;
-        }
-
-        .border-top {
-            border-top: 1px solid #dee2e6 !important;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         .chat-room{
-            display: none;
+            /* display: none; */
         }
 
-        .qr{
-            position: absolute;
-            display: none;
-            bottom: 0;
-            left:10px
+        .chat-container {
+            height: 100vh;
+            border-radius: 0;
+            box-shadow: none;
+            overflow: hidden;
         }
 
-        .btn-primary {
-            color: #fff;
-            background-color: {{$cms->secondary_color}};
-            border-color: {{$cms->secondary_color}};
-            box-shadow: 0 0.125rem 0.25rem 0 rgba(105, 108, 255, 0.4);
-        }
-
-        .navbar-top {
-            background-color: {{$cms->secondary_color}} !important;
-            color: #fff;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            height: 80px;
-            z-index: 1030;
+        .logo-container {
             display: flex;
             align-items: center;
-            padding: 0 15px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .navbar-top .navbar-brand {
-            height: auto;
-            margin-left: auto;
-            margin-right: auto;
-            display: block;
+        .logo-container > h1 {
+            padding: 10px;
+            color: white;
         }
 
-        .navbar-top .form-inline {
-            height: auto;
-            margin-left: auto;
-            margin-right: auto;
-            display: block;
+        .logo {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
         }
 
-        .navbar-top .form-control {
-            max-width: 400px;
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 10px;
+            height: 60px;
+            background-color: #171717;
+        }
+
+        .chat-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .chat-box p {
+            margin: 10px 0;
+            font-size: 16px;
         }
 
         .input-container {
-            position: fixed;
-            bottom: 0;
-            width: 41%;
-            /* position: relative; */
-        }
-
-        .input-container .form-control.msg {
-            background-color: #1E1E1E;
-            color: #FFF;
-            border: 1px solid #1E1E1E;
-            border-radius: 10px;
-            padding-right: 50px;
-            resize: none;
-        }
-
-        .input-container .send-msg {
-            position: absolute;
-            right: 10px;
-            bottom: 10px;
-            background-color: {{$cms->primary_color}}!important;
-            color: #FFF;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 15px;
+            border-top: 0.01px solid #5c5b5b;
         }
 
-        .input-container .send-upload {
-            position: absolute;
-            right: 60px;
-            bottom: 10px;
-            background-color: {{$cms->primary_color}}!important;
-            color: #FFF;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .input-container .send-msg:hover {
-            background-color: {{$cms->primary_color}}!important;
-        }
-
-        .input-container .send-msg:focus {
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border-radius: 30%;
+            border: 1px solid #ccc;
+            background-color: #1e1e1e;
+            border-radius: 5px 0 0 5px;
             outline: none;
-            box-shadow: none;
         }
 
-        .img_icon{
-            max-width: 30%; /* Ensure the image doesn't exceed container width */
-            height: auto; /* Maintain aspect ratio */
-            margin-left: auto;
-            margin-right: auto;
-            display: block;
+        .light-mode input {
+            color: #171717;
+            background-color: #f9f9f9;
         }
 
-        @media (max-width: 768px) {
-            .navbar-top .navbar-brand {
-                /* margin-left:  */
-                /* align-items: center;
-                justify-content: center;
-                text-align: center; */
-            }
-
-            .navbar-top .form-inline {
-                /* margin-right: 10px; */
-                /* display: flex;
-                justify-content: center;
-                margin-top: 10px; */
-            }
-
-            /* .img_icon{
-                align-items: center;
-                justify-content: center;
-            } */
-
-            .input-container {
-                width: 70%;
-            }
-
+        .dark-mode input {
+            color: #ddd;
+            background-color: #1d1c1c;
         }
 
-        @media (max-width: 576px) {
-            .input-group .send-msg {
-                padding: 0.375rem;
-            }
-
-            .input-container {
-                width: 81%;
-            }
-            
-            .chat-messages {
-                max-height: 550px;
-            }
+        .light-mode button {
+            color: #171717;
+            background-color: #f9f9f9;
         }
 
-        .img-chat{
-            width: 70%;
-            border-radius: 10px;
+        button {
+            padding: 10px 20px;
+            border: none;
+            border: 1px solid #ccc;
+            background-color: #1d1c1c;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        .bg-custom{
-            background-color: #ced6e0 !important;
+        .card {
+            background-color: #3d3d3d;
+            margin: 10px;
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            z-index: 2;
         }
 
-        #image-preview{
-            max-width: 300px;
-            max-height: 300px;
-            float: right;
-            margin-right: 26px;
-            margin-bottom: 20px;
-            border-radius: 10px;
+        .reply {
+            background-color: #e1e1e1;
+            margin: -16px 10px 10px;
+            border-bottom-right-radius: 8px;
+            border-bottom-left-radius: 8px;
+            border-top-left-radius: 8px;
+            padding: 10px;
+            color: #3d3d3d;
+            z-index: 999;
         }
 
-        .area-image {
+        .svg-icon {
+            width: 2em;
+            height: 2em;
+        }
+
+        .svg-icon path,
+        .svg-icon polygon,
+        .svg-icon rect {
+            fill: #3d3d3d;
+        }
+
+        .svg-icon circle {
+            stroke: #3d3d3d;
+            stroke-width: 1;
+        }
+
+        .d-none{
             display: none;
-            position: fixed;
-            bottom: 100px;
-            right: 500px;
-            z-index: 1000;
-            max-width: 300px;
-            max-height: 300px;
         }
+
+        .preview-image-area {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .preview-image-area > #image-preview{
+            display: none;
+            width: 300px;
+            border-radius: 10px;
+        }
+
+        .remove-image{
+            font-size: 5px;
+            background-color: red;
+            padding: 6px;
+            border-radius: 100%;
+            color: white !important;
+            position: absolute;
+            margin: 5px;
+            display: none
+        }
+
+        .remove-image > .svg-icon path,
+        .svg-icon polygon,
+        .svg-icon rect {
+            fill: #ffffff;
+        }
+
+        .remove-image > .svg-icon circle {
+            stroke: #ffffff;
+            stroke-width: 1;
+        }
+
+        .img-chat{max-width:300px;max-height:300px;margin-top:10px;border-radius:10px}
     </style>
-</head>
 
-<body>
-
-    <div style="display:flex;justify-content:center;align-items:center;height:100vh;" class="container name-area">
-        <div class="row">
-            <div class="col-10 offset-1">
-                <img class="img_icon"
-                    src="{{ asset('/assets/image_content/'. $cms->logo ) }}">
-                <div style="margin-top: 10%; background-color: {{$cms->primary_color}}!important;" class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <input type="text" id="name" class="form-control name" placeholder="Type your name...">
-                        </div>
-                        <div style="margin-left:20px;" class="form-group">
-                            <input type="checkbox" id="disclaimer" class="form-check-input">
-                            <label style="color:#fff;" for="disclaimer" class="form-check-label disclaimer">
-                                Disclaimer
-                            </label><br>
-                            <label style="color:#fff;" for="disclaimer" class="form-check-label disclaimer">
-                                I am responsible for any text and image i see through this platform.
-                            </label>
-                        </div><br><br>
-                        <div class="form-group">
-                            <button style="width:100%" type="button" id="submit-btn" class="btn btn-primary">
-                                Confirm
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="qr p-1">
-        <div class="card">
-            <div class="card-body">
-                <center>
-                    <h5><b>QR Code Room</b></h5>
-                </center>
-                {!! QrCode::size(200)->generate(url('/room/chat/'.$room->code)); !!}
-                <center>
-                    <small>*Scan untuk memasuki room chat</small>
-                </center>
-            </div>
-        </div>
-    </div>
-    <main class="content chat-room">
-        <div class="container-fluid p-0">
-            <nav class="navbar navbar-light bg-light navbar-top">
-                <a id="navbar-user-name" class="navbar-brand" href="#"></a>
-                <form class="form-inline">
-                    <img src="{{ asset('/assets/image_content/' . $cms->logo) }}" style="width:100px;" alt="Logo">
-                </form>
-            </nav>
-        </div>
-        <div style="display: flex;justify-content: center;align-items: center;" class="container p-0">
-            <div class="card" style="background-color: {{$cms->primary_color}}!important;width:750px;">
-                <div class="row g-0">
-                    <div class="col-12">
-                        <!-- <div class="py-2 px-4 border-bottom d-none d-lg-block">
-                            <div class="d-flex align-items-center py-1">
-                                <div class="position-relative">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-fill" viewBox="0 0 16 16">
-                                        <path d="M2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
-                                      </svg>
-                                </div>
-                                <div class="flex-grow-1 pl-3">
-                                    <strong>{{ $room->code }}</strong>
-                                </div>
+    <body>
+        <div style="display:flex;justify-content:center;align-items:center;height:100vh;" class="container name-area">
+            <div class="row">
+                <div class="col-10 offset-1">
+                    <img class="img_icon"
+                        src="{{ asset('/assets/image_content/'. $cms->logo ) }}">
+                    <div style="margin-top: 10%; background-color: {{$cms->primary_color}}!important;" class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <input type="text" id="name" class="form-control name" placeholder="Type your name...">
                             </div>
-                        </div> -->
-                        <div class="position-relative">
-                            <div class="chat-messages p-4">
-                                @foreach ($model as $item)
-                                <div class="chat-message pb-4" data-id="{{ $item->id }}">
-                                    <!-- <div>
-                                        <img src="https://www.booksie.com/files/profiles/22/mr-anonymous.png"
-                                            class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
-                                        <div class="text-muted small text-nowrap mt-2">{{ date('H:i', strtotime($item->created_at)) }}</div>
-                                    </div> -->
-                                    <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                                        <div class="font-weight-bold mb-1">{{ $item->name }}</div>
-                                        @if ($item->image)
-                                            <img style="max-width:300px;max-height:300px;" src="{{ asset($item->image) }}" alt="Image" class="img-chat">
-                                        @else
-                                        <div style="font-family: {{@$chat_contents->chat_font}}; color: {{ @$chat_contents->username_color }}">
-                                            {{ $item->text }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    @if (!empty($item->reply))
-                                        @foreach ($item->reply as $replyitem)
-                                            <div class="flex-shrink-1 bg-custom text-dark rounded py-2 px-3 mr-3 mt-1 ml-3">
-                                                <div class="font-weight-medium mb-1"><i>Balasan dari <b>Admin</b> kepada {{ $item->name }}</i></div>
-                                                {{ @$replyitem->text }}
-                                            </div>
-                                        @endforeach
-                                    @endif
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                        <div class="area-image">
-                            <div class="row">
-                                <img id="image-preview" src="" alt="Image Preview"/>
-                            </div>
-                            <div class="row">
-                                <button type="button" class="btn mx-1 change-image btn-sm btn-primary"><i class='fa fa-image' ></i></button>
-                                <button type="button" class="btn mx-1 remove-image btn-sm btn-danger"><i class='fa fa-trash' ></i></button>
-                                <button type="button" class="btn mx-1 upload-image btn-sm btn-success"><i class='fa fa-check' ></i></button>
-                            </div>
-                        </div>
-                        <div class="flex-grow-0 py-3 px-4 field">
-                            <div class="input-container">
-                                <textarea id="chat-input" class="form-control msg" rows="3" placeholder="Type your message here..."></textarea>
-                                <input type="file" id="chat-file" class="d-none" />
-                                <button class="btn btn-primary send-upload" type="button">
-                                    <i class="fa fa-image"></i>
-                                </button>
-                                <button class="btn btn-primary send-msg" type="button">
-                                    <i class="fa fa-paper-plane"></i>
+                            <div style="margin-left:20px;" class="form-group">
+                                <input type="checkbox" id="disclaimer" class="form-check-input">
+                                <label style="color:#fff;" for="disclaimer" class="form-check-label disclaimer">
+                                    Disclaimer
+                                </label><br>
+                                <label style="color:#fff;" for="disclaimer" class="form-check-label disclaimer">
+                                    I am responsible for any text and image i see through this platform.
+                                </label>
+                            </div><br><br>
+                            <div class="form-group">
+                                <button style="width:100%" type="button" id="submit-btn" class="btn btn-primary">
+                                    Confirm
                                 </button>
                             </div>
                         </div>
@@ -376,212 +226,262 @@
                 </div>
             </div>
         </div>
-    </main>
+        <div class="chat-container chat-room light-mode">
+            <div class="chat-content">
+                <div class="chat-header">
+                    <div class="logo-container">
+                        <h1>
+                            <img src="{{ asset('/assets/image_content/' . $cms->logo) }}" style="width:100px;" alt="Logo">
+                        </h1>
+                    </div>
+                </div>
+                <div class="chat-box" id="chat-box">
+                    @foreach ($model as $item)
+                        <div class="card chat-message" data-id="{{ $item->id }}">
+                            <b>{{ $item->name }}</b><br>
+                            @if ($item->image)
+                                <img src="{{ asset($item->image) }}" alt="Image" class="img-chat">
+                                <p style="font-family: {{@$chat_contents->chat_font}}; color: {{ @$chat_contents->username_color }}">{{ $item->text }}</p>
+                            @else
+                                <p style="font-family: {{@$chat_contents->chat_font}}; color: {{ @$chat_contents->username_color }}">{{ $item->text }}</p>
+                            @endif
+                        </div>
+                        @if (!empty($item->reply))
+                            @foreach ($item->reply as $replyitem)
+                                <div class="reply">
+                                    <i>Balasan dari <b>Admin</b> kepada {{ $item->name }}</i><br>
+                                    {{ @$replyitem->text }}
+                                </div>
+                            @endforeach
+                        @endif
+                    @endforeach
+                </div>
+
+                <!-- Preview image -->
+                <div class="preview-image-area">
+                    <span class="remove-image">
+                        <svg class="svg-icon" viewBox="0 0 20 20">
+							<path fill="none" d="M11.469,10l7.08-7.08c0.406-0.406,0.406-1.064,0-1.469c-0.406-0.406-1.063-0.406-1.469,0L10,8.53l-7.081-7.08
+							c-0.406-0.406-1.064-0.406-1.469,0c-0.406,0.406-0.406,1.063,0,1.469L8.531,10L1.45,17.081c-0.406,0.406-0.406,1.064,0,1.469
+							c0.203,0.203,0.469,0.304,0.735,0.304c0.266,0,0.531-0.101,0.735-0.304L10,11.469l7.08,7.081c0.203,0.203,0.469,0.304,0.735,0.304
+							c0.267,0,0.532-0.101,0.735-0.304c0.406-0.406,0.406-1.064,0-1.469L11.469,10z"></path>
+						</svg>
+                    </span>
+                    <img id="image-preview" src="" alt="Image Preview"/>
+                </div>
+
+                <div class="input-container">
+                    <input type="text" id="chat-input" class="msg" placeholder="Type your message...">
+                    <input type="file" id="chat-file" class="d-none" />
+                    <button class="send-upload">
+                        <svg class="svg-icon" viewbox="0 0 20 20">
+                            <path
+                                d="M10,6.536c-2.263,0-4.099,1.836-4.099,4.098S7.737,14.732,10,14.732s4.099-1.836,4.099-4.098S12.263,6.536,10,6.536M10,13.871c-1.784,0-3.235-1.453-3.235-3.237S8.216,7.399,10,7.399c1.784,0,3.235,1.452,3.235,3.235S11.784,13.871,10,13.871M17.118,5.672l-3.237,0.014L12.52,3.697c-0.082-0.105-0.209-0.168-0.343-0.168H7.824c-0.134,0-0.261,0.062-0.343,0.168L6.12,5.686H2.882c-0.951,0-1.726,0.748-1.726,1.699v7.362c0,0.951,0.774,1.725,1.726,1.725h14.236c0.951,0,1.726-0.773,1.726-1.725V7.195C18.844,6.244,18.069,5.672,17.118,5.672 M17.98,14.746c0,0.477-0.386,0.861-0.862,0.861H2.882c-0.477,0-0.863-0.385-0.863-0.861V7.384c0-0.477,0.386-0.85,0.863-0.85l3.451,0.014c0.134,0,0.261-0.062,0.343-0.168l1.361-1.989h3.926l1.361,1.989c0.082,0.105,0.209,0.168,0.343,0.168l3.451-0.014c0.477,0,0.862,0.184,0.862,0.661V14.746z"></path>
+                        </svg>
+                    </button>
+                    <button id="send-button" class="send-msg">
+                        <svg class="svg-icon" viewbox="0 0 20 20">
+                            <path
+                                d="M17.218,2.268L2.477,8.388C2.13,8.535,2.164,9.05,2.542,9.134L9.33,10.67l1.535,6.787c0.083,0.377,0.602,0.415,0.745,0.065l6.123-14.74C17.866,2.46,17.539,2.134,17.218,2.268 M3.92,8.641l11.772-4.89L9.535,9.909L3.92,8.641z M11.358,16.078l-1.268-5.613l6.157-6.157L11.358,16.078z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </body>
+
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript">
-        let flag_field = localStorage.getItem('flag-field');
-        let flag_upload = false;
-
+    <script>
         $(document).ready(function(){
-            let chatMessages = $('.chat-messages');
-            chatMessages.scrollTop(chatMessages[0].scrollHeight);
-        });
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        let room_id = "{{ $room->id }}";
-        let name = "";
-
-        if (flag_field == "true" || flag_field == true) {
-            $('.field').hide();
-            $('.chat-room').show();
-            $('.name-area').hide();
-            $('.qr').hide();
-            $('.navbar').hide();
-            localStorage.removeItem('flag-field');
-        }
-
-        function scrollToBottom() {
-            let chatMessages = $('.chat-messages');
-            chatMessages.scrollTop(chatMessages[0].scrollHeight);
-        }
-
-        $('body').on('click', '.upload-image', function(){
-            flag_upload = true;
-            $('#chat-file').trigger('change');
-        });
-
-        $('body').on('click', '.change-image', function(){
-            $('#chat-file').click();
-        });
-
-        $('body').on('click', '.remove-image', function(){
-            $('.area-image').hide();
-            $('#chat-input').val('');
-        });
-
-        $('#submit-btn').click(function(){
-            name = $('#name').val();
-            let disclaimerChecked = $('#disclaimer').is(':checked');
-            
-            if (name.trim() === '') {
-                alert('Harap masukkan nama Anda.');
-                return;
-            }
-            
-            if (!disclaimerChecked) {
-                alert('Anda harus menyetujui syarat dan ketentuan.');
-                return;
-            }
-
-            $('.chat-room').show();
-            $('.name-area').hide();
-            $('.qr').hide();  // Menyembunyikan QR Code
-
-            $('#navbar-user-name').text('@' + name);
-
-            let chatMessages = $('.chat-messages');
-            chatMessages.scrollTop(chatMessages[0].scrollHeight);
-        });
-
-        $('.send-upload').click(function(){
-            $('#chat-file').click();
-        });
-
-        $('#chat-file').change(function(event) {
-            let file = event.target.files[0];
-            if (file) {
-                // Check if the selected file is an image
-                if (file.type.startsWith('image/') && flag_upload == false) {
-                    let reader = new FileReader();
-                    
-                    // Load the image and display it in an img tag
-                    reader.onload = function(e) {
-                        $('#image-preview').attr('src', e.target.result);
-                        $('#image-preview').show(); // Make sure the image preview is visible
-                        $('.area-image').show();
-                    };
-
-                    reader.readAsDataURL(file); // Convert the file to a data URL
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
+            });
 
-                let formData = new FormData();
-                formData.append('room_id', room_id);
-                formData.append('name', name);
-                formData.append('file', file);
-
-                if (flag_upload == true) {
-                    $.ajax({
-                        url: "/api/send-file",
-                        type: "POST",
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        success: function(response) {
-                            // Handle success response
-                            console.log('File uploaded successfully.');
-                            flag_upload = false;
-                            $('.area-image').hide();
-                            $('#chat-input').val(''); // Clear input after successful upload
-                        },
-                        error: function(xhr, status, error) {
-                            // Handle error response
-                            console.log('Error uploading file.');
-                        }
-                    });
-                }
+            function toBottom(){
+                let chatMessages = $('.chat-box');
+                chatMessages.scrollTop(chatMessages[0].scrollHeight + 200);
             }
-        });
 
-        $('.send-msg').click(function(){
-            // let msg = $('.msg').val();
-            let msg = $('#chat-input').val();
-            $('.send-msg').html('...');
-            $.ajax({
-                url : "/api/send-msg",
-                type : "POST",
-                data : {
-                    room_id : room_id,
-                    msg : msg,
-                    name : name
-                },
-                success:function(res){
-                    $('.msg').val('');
-                    $('.send-msg').html('<i class="fa fa-paper-plane"></i>');
-                }
-            })
-        });
+            let room_id = "{{ $room->id }}";
+            let name = "";
+            let flag_field = localStorage.getItem('flag-field');
+            let flag_upload = false;
 
-        // autoload
-        setInterval(() => {
-            $.ajax({
-                url : "/api/get-msg",
-                type : "POST",
-                data : {
-                    id : room_id,
-                },
-                success:function(res){
-                    let shouldScroll = false;
-                    res.forEach(item => {
-                        // Check if the message already exists
-                        if (!$(`.chat-message[data-id="${item.id}"]`).length) {
+            $('.preview-image-area').hide();
 
-                            console.log(item);
+            if (flag_field == "true" || flag_field == true) {
+                $('.field').hide();
+                $('.chat-room').show();
+                $('.name-area').hide();
+                $('.qr').hide();
+                $('.navbar').hide();
+                localStorage.removeItem('flag-field');
+            }
 
-                            shouldScroll = true;
-                            // Extract and format the hour from created_at
-                            let date = new Date(item.created_at);
-                            let hours = date.getHours();
-                            let minutes = date.getMinutes();
-                            hours = hours;
-                            minutes = minutes < 10 ? '0'+minutes : minutes;
-                            let formattedTime = hours + ':' + minutes;
+            $('.send-upload').click(function(){
+                $('#chat-file').click();
+                $('.preview-image-area').show();
+            });
 
-                            let avatarUrl = `https://www.booksie.com/files/profiles/22/mr-anonymous.png`;
+            $('#chat-file').change(function(event) {
+                let file = event.target.files[0];
+                if (file) {
+                    // Check if the selected file is an image
+                    if (file.type.startsWith('image/') && flag_upload == false) {
+                        let reader = new FileReader();
+                        
+                        // Load the image and display it in an img tag
+                        reader.onload = function(e) {
+                            $('#image-preview').attr('src', e.target.result);
+                            $('#image-preview').show(); // Make sure the image preview is visible
+                            $('.area-image').show();
+                            $('.remove-image').show();
+                        };
 
-                            let final_content = "";
-                            if (item.text == "" || item.text == null) {
-                                final_content = `<img class="img-chat" src="{{ asset('${item.image}') }}">`;
-                            }else{
-                                final_content = item.text;
-                            }
-
-                            let newMessage = `
-                                <div class="chat-message mt-3" data-id="${item.id}">
-                                    <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                                        <div class="font-weight-bold mb-1">${item.name}</div>
-                                        ${final_content}
-                                    </div>
-                                </div>
-                            `;
-
-                            if(item.reply != null){
-                                $.each(item.reply, function(k, v){
-                                    newMessage += `<div class="flex-shrink-1 bg-custom text-dark rounded py-2 px-3 mr-3 mt-1 ml-3">
-                                                        <div class="font-weight-medium mb-1"><i>Balasan dari <b>Admin</b> kepada ${item.name}</i></div>
-                                                        ${v.text}
-                                                    </div>`;
-                                });
-                            }
-
-                            // Append the new message
-                            $('.chat-messages').append(newMessage);
-                        }
-                    });
-                    if (shouldScroll) {
-                        let chatMessages = $('.chat-messages');
-                        chatMessages.scrollTop(chatMessages[0].scrollHeight);
+                        reader.readAsDataURL(file); // Convert the file to a data URL
                     }
                 }
+            });
+            
+            $('#submit-btn').click(function(){
+                name = $('#name').val();
+                let disclaimerChecked = $('#disclaimer').is(':checked');
+                
+                if (name.trim() === '') {
+                    alert('Harap masukkan nama Anda.');
+                    return;
+                }
+                
+                if (!disclaimerChecked) {
+                    alert('Anda harus menyetujui syarat dan ketentuan.');
+                    return;
+                }
+
+                $('.chat-room').show();
+                $('.name-area').hide();
+                $('.qr').hide();  // Menyembunyikan QR Code
+
+                $('#navbar-user-name').text('@' + name);
+
+                toBottom();
+            });
+
+            $('.send-msg').click(function(){
+                // Get the message input
+                let msg = $('#chat-input').val();
+
+                // Create a FormData object to handle both the text and the file
+                let formData = new FormData();
+                formData.append('room_id', room_id);
+                formData.append('msg', msg);
+                formData.append('name', name);
+
+                // Check if there's a file selected
+                let fileInput = $('#chat-file')[0]; // Assuming there's a file input with id="chat-file"
+                let file = fileInput.files[0];
+
+                if (file && file.type.startsWith('image/')) {
+                    formData.append('file', file);
+                }
+
+                // Set the button text to indicate sending
+                $('.send-msg').html('...');
+
+                // Send the AJAX request
+                $.ajax({
+                    url: "/api/send-msg",  // Assuming your API can handle both message and file
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(res) {
+                        // Clear the input fields
+                        $('#chat-input').val('');
+                        $('#chat-file').val(''); // Clear the file input
+
+                        // Reset the button text
+                        $('.send-msg').html('<i class="fa fa-paper-plane"></i>');
+
+                        // Optionally, hide the image preview after successful upload
+                        $('#image-preview').hide();
+                        $('.area-image').hide();
+                        $('.remove-image').hide();
+                        toBottom();
+                    }
+                });
+            });
+
+            $('.remove-image').click(function(){
+                $('#chat-file').val(''); // Clear the file input
+
+                // Optionally, hide the image preview after successful upload
+                $('#image-preview').hide();
+                $('.area-image').hide();
+                $('.remove-image').hide();
             })
 
-        }, 500);
+            // autoload
+            setInterval(() => {
+                $.ajax({
+                    url : "/api/get-msg",
+                    type : "POST",
+                    data : {
+                        id : room_id,
+                    },
+                    success:function(res){
+                        let shouldScroll = false;
+                        res.forEach(item => {
+                            // Check if the message already exists
+                            if (!$(`.chat-message[data-id="${item.id}"]`).length) {
+                                shouldScroll = true;
+                                // Extract and format the hour from created_at
+                                let date = new Date(item.created_at);
+                                let hours = date.getHours();
+                                let minutes = date.getMinutes();
+                                hours = hours;
+                                minutes = minutes < 10 ? '0'+minutes : minutes;
+                                let formattedTime = hours + ':' + minutes;
+
+                                let avatarUrl = `https://www.booksie.com/files/profiles/22/mr-anonymous.png`;
+
+                                let final_content = `<p>${item.text}</p>`;
+                                if (item.image) {
+                                    final_content = `<img class="img-chat" src="{{ asset('${item.image}') }}">`;
+                                    final_content += `<p>${item.text}</p>`;
+                                }
+
+                                let newMessage = `
+                                    <div class="card chat-message" data-id="${item.id}">
+                                        <b>${item.name}</b><br>
+                                        ${final_content}
+                                    </div>
+                                `;
+
+                                if(item.reply != null){
+                                    $.each(item.reply, function(k, v){
+                                        newMessage += `<div class="reply">
+                                                            <i>Balasan dari <b>Admin</b> kepada ${item.name}</i><br>
+                                                            ${v.text}
+                                                        </div>`;
+                                    });
+                                }
+
+                                // Append the new message
+                                $('.chat-box').append(newMessage);
+                                setTimeout(() => {
+                                    toBottom();
+                                }, 500);
+                            }
+                        });
+                        if (shouldScroll) {
+                            toBottom();
+                        }
+                    }
+                })
+            }, 500);
+        });
     </script>
-</body>
 
 </html>

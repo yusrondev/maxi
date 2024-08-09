@@ -16,11 +16,23 @@ class FrontendController extends Controller
 
     public function sendmsg(Request $request)
     {
-        $model = new Message();
-        $model->room_id = $request->room_id;
-        $model->name = $request->name;
-        $model->text = $request->msg;
-        $model->save();
+        $message = new Message;
+        $message->room_id = $request->room_id;
+        $message->name = $request->name;
+        $message->text = $request->msg;
+
+        if (!empty($request->file('file'))) {
+            $request->validate([
+                'file' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            ]);
+    
+            $file = $request->file('file');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads'), $filename);
+            $message->image = 'uploads/' . $filename;
+        }
+        
+        $message->save();
 
         return response()->json([
             'name' => $request->name,
