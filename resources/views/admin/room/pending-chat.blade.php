@@ -45,6 +45,7 @@
                                 @endif
                             <td>
                                 <a href="{{ url('/room/approve-chat/'.$item->id) }}" class="btn btn-primary"><i class='bx bx-check' ></i></a>
+                                <a data-name="{{ $item->name }}" data-id="{{ $item->id }}" data-msg="{{ $item->text }}" class="btn btn-dark text-white reply"><i class='bx bx-message-dots'></i></a>
                             </td>
                         </tr>
                     @endforeach
@@ -53,11 +54,62 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 labelmodal"></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <small class="msg bg-light p-2"></small>
+                <div class="form-group mt-4">
+                    <input type="text" class="form-control text" name="text" placeholder="Masukkan balasan..." value="">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-id="" class="btn btn-primary reply-action">Balas</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 @push('js')
     <script>
         let id = "{{ $id }}";
         let approve_link = "{{ url('/room/approve-chat') }}";
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $('body').on('click', '.reply', function(){
+            $('.labelmodal').html(`Balas pesan dari : ` + $(this).data('name'));
+            $('.msg').html(`"` + $(this).data('msg') + `"`);
+            $('.modal').modal('show');
+            $('.reply-action').attr('data-id', $(this).data('id'));
+        });
+
+        $('body').on('click', '.reply-action', function(){
+            let id_msg = $(this).data('id');
+            let msg = $(this).parents().find('.text').val();
+            $.ajax({
+                url : "{{ url('/room/reply-chat') }}",
+                type : "POST",
+                data : {
+                    id_msg : id_msg,
+                    text : msg
+                },
+                success:function(res) {
+                    window.location.reload();
+                }
+            });
+        });
+        
         setInterval(() => {
             $.ajax({
                 url : "{{ url('/room/pending-chat') }}" + "/" + id,
@@ -80,6 +132,7 @@
                                     <td>${final_content}</td>
                                     <td>
                                         <a href="${approve_link + "/" + item.id}" class="btn btn-primary"><i class='bx bx-check' ></i></a>
+                                        <a data-name="${item.name}" data-id="${item.id}" data-msg="${item.text}" class="btn btn-dark reply text-white"><i class='bx bx-message-dots'></i></a>
                                     </td>
                                 </tr>
                             `;

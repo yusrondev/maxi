@@ -6,6 +6,7 @@ use App\Models\Room;
 use Illuminate\Http\Request;
 use App\Events\PusherBroadcast;
 use App\Models\Message;
+use App\Models\Reply;
 
 class RoomController extends Controller
 {
@@ -21,6 +22,23 @@ class RoomController extends Controller
         $model->code = $request->code;
         $model->save();
         return redirect('room');
+    }
+
+    public function replychat(Request $request)
+    {
+        $model = new Reply();
+        $model->message_id = $request->id_msg;
+        $model->text = $request->text;
+        $model->save();
+
+        Message::where('id', $request->id_msg)->update([
+            'status' => 1
+        ]);
+
+        return response()->json([
+            'rc' => 200,
+            'msg' => 'success'
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -80,7 +98,7 @@ class RoomController extends Controller
     public function roomchat($code)
     {
         $room = Room::where('code', $code)->first();
-        $model = Message::where('room_id', $room->id)->where('status', 1)->get();
+        $model = Message::with('reply')->where('room_id', $room->id)->where('status', 1)->get();
 
         return view('admin/room/chat', [
             'model' => $model,
@@ -90,7 +108,7 @@ class RoomController extends Controller
 
     public function pendingchat(Request $request, $id)
     {
-        $model = Message::where('room_id', $id)->where('status', 0)->orderBy('id', 'DESC')->get();
+        $model = Message::where('room_id', $id)->where('status', 0)->get();
         if ($request->ajax()) {
             return $model;
         }
