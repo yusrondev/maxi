@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style type="text/css">
         body {
+            overflow-y: hidden;
             margin-top: 100px;
             background-color: {{$cms->primary_color}}!important;
         }
@@ -27,9 +28,9 @@
         .chat-messages {
             display: flex;
             flex-direction: column;
-            max-height: 750px;
+            max-height:750px;
             overflow-y: scroll;
-            /* scrollbar-width: none; */
+            scrollbar-width: none; 
         }
 
         .chat-message-left,
@@ -198,11 +199,23 @@
                 justify-content: center;
             } */
 
+            .input-container {
+                width: 70%;
+            }
+
         }
 
         @media (max-width: 576px) {
             .input-group .send-msg {
                 padding: 0.375rem;
+            }
+
+            .input-container {
+                width: 81%;
+            }
+            
+            .chat-messages {
+                max-height: 550px;
             }
         }
 
@@ -318,9 +331,11 @@
                                     <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
                                         <div class="font-weight-bold mb-1">{{ $item->name }}</div>
                                         @if ($item->image)
-                                            <img src="{{ asset($item->image) }}" alt="Image" class="img-chat">
+                                            <img style="max-width:300px;max-height:300px;" src="{{ asset($item->image) }}" alt="Image" class="img-chat">
                                         @else
+                                        <div style="font-family: {{@$chat_contents->chat_font}}; color: {{ @$chat_contents->username_color }}">
                                             {{ $item->text }}
+                                        </div>
                                         @endif
                                     </div>
                                     @if (!empty($item->reply))
@@ -367,6 +382,12 @@
     <script type="text/javascript">
         let flag_field = localStorage.getItem('flag-field');
         let flag_upload = false;
+
+        $(document).ready(function(){
+            let chatMessages = $('.chat-messages');
+            chatMessages.scrollTop(chatMessages[0].scrollHeight);
+        });
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
