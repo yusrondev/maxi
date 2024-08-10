@@ -29,6 +29,7 @@
                         <th>No</th>
                         <th>Nama</th>
                         <th>Pesan</th>
+                        <th>Lampiran</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -37,12 +38,10 @@
                         <tr class="row-table" data-id="{{ $item->id }}">
                             <td>{{ ($key + 1) }}</td>
                             <td>{{ $item->name }}</td>
+                            <td>{{ $item->text }}</td>
                             <td>
-                                @if ($item->text == "")
-                                    <img width="200px" src='{{ asset("$item->image") }}' alt="">
-                                    @else
-                                    {{ $item->text }}
-                                @endif
+                                <img width="200px" src='{{ asset("$item->image") }}' alt="">
+                            </td>
                             <td>
                                 <a href="{{ url('/room/approve-chat/'.$item->id) }}" class="btn btn-primary"><i class='bx bx-check' ></i></a>
                                 <a data-name="{{ $item->name }}" data-id="{{ $item->id }}" data-msg="{{ $item->text }}" class="btn btn-dark text-white reply"><i class='bx bx-message-dots'></i></a>
@@ -118,18 +117,12 @@
                     res.forEach(item => {
                         // Check if the message already exists
                         if (!$(`.row-table[data-id="${item.id}"]`).length) {
-                            let final_content = "";
-                            if (item.text == "" || item.text == null) {
-                                final_content = `<img width="200px" src="{{ asset('${item.image}') }}">`;
-                            }else{
-                                final_content = item.text;
-                            }
-
                             let newMessage = `
                                 <tr class="row-table bg-info text-dark" data-id="${item.id}">
                                     <td>${$(`.row-table`).length + 1}</td>
                                     <td>${item.name}</td>
-                                    <td>${final_content}</td>
+                                    <td>${item.text}</td>
+                                    <td><img width="200px" src="{{ asset('${item.image}') }}"></td>
                                     <td>
                                         <a href="${approve_link + "/" + item.id}" class="btn btn-primary"><i class='bx bx-check' ></i></a>
                                         <a data-name="${item.name}" data-id="${item.id}" data-msg="${item.text}" class="btn btn-dark reply text-white"><i class='bx bx-message-dots'></i></a>
