@@ -322,6 +322,8 @@
                 chatMessages.scrollTop(chatMessages[0].scrollHeight + 200);
             }
 
+            toBottom();
+
             let room_id = "{{ $room->id }}";
             let name = "";
             let flag_field = localStorage.getItem('flag-field');
