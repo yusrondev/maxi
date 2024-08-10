@@ -6,7 +6,6 @@ use App\Http\Controllers\CMSController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\RoomController;
 use Illuminate\Support\Facades\Route;
-use Symfony\Component\Yaml\Inline;
 
 Route::get('/', function () {
     return redirect('dashboard');
@@ -32,14 +31,9 @@ Route::post('/api/send-file', [FrontendController::class, 'sendFile']);
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::group(['middleware' => ['auth']], function() {
     // dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    // cms
-    Route::get('/cms', [CMSController::class, 'index'])->name('cms');
-    Route::put('/cms/{id}', [CMSController::class, 'update'])->name('cms.update');
-    Route::put('/cms/chat_content/{id}', [CMSController::class, 'chatContent_update'])->name('chat_content.update');
 
     //setting
     Route::get('/settings', [CMSController::class, 'setting'])->name('settings');
@@ -55,6 +49,15 @@ Route::middleware('auth')->group(function () {
 
     //back office
     include __DIR__.'/back-office.php';
+});
+
+Route::group(['middleware' => ['permission:cms-list']], function(){
+    // cms
+    Route::get('/cms', [CMSController::class, 'index'])->name('cms');
+    Route::group(['middleware' => ['permission:cms-update']], function(){
+        Route::put('/cms/{id}', [CMSController::class, 'update'])->name('cms.update');
+    });
+    Route::put('/cms/chat_content/{id}', [CMSController::class, 'chatContent_update'])->name('chat_content.update');
 });
 
 require __DIR__.'/auth.php';

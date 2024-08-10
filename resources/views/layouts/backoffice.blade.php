@@ -376,26 +376,38 @@
                             </a>
                         </li>
                         <!-- CMS -->
-                        <li class="menu-item @yield('menu-cms')">
-                            <a href="{{ url('/cms') }}" class="menu-link">
-                                <i class="menu-icon tf-icons bx bx-table"></i>
-                                <div data-i18n="Tables">CMS</div>
-                            </a>
-                        </li>
-                        <!-- Setting -->
-                        <li class="menu-item @yield('menu-setting')">
-                            <a href="{{ url('/settings') }}" class="menu-link">
-                                <i class="menu-icon tf-icons bx bx-cog"></i>
-                                <div data-i18n="Cog">Setting</div>
-                            </a>
-                        </li>
-                        <!-- Room -->
-                        <li class="menu-item @yield('menu-room')">
-                            <a href="{{ url('/room') }}" class="menu-link">
-                                <i class="menu-icon tf-icons bx bx-chat"></i>
-                                <div data-i18n="Chat">Room</div>
-                            </a>
-                        </li>
+                        @can('cms-list')
+                            <li class="menu-item @yield('menu-cms')">
+                                <a href="{{ url('/cms') }}" class="menu-link">
+                                    <i class="menu-icon tf-icons bx bx-table"></i>
+                                    <div data-i18n="Tables">CMS</div>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('role-list')
+                            <li class="menu-item @yield('menu-roles')">
+                                <a href="{{ url('/roles') }}" class="menu-link">
+                                    <i class="menu-icon tf-icons bx bx-shield-alt-2"></i>
+                                    <div data-i18n="Tables">Roles</div>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('user-list')
+                            <li class="menu-item @yield('menu-users')">
+                                <a href="{{ url('/users') }}" class="menu-link">
+                                    <i class="menu-icon tf-icons bx bx-user"></i>
+                                    <div data-i18n="Tables">User</div>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('room-list')
+                            <li class="menu-item @yield('menu-room')">
+                                <a href="{{ url('/room') }}" class="menu-link">
+                                    <i class="menu-icon tf-icons bx bx-chat"></i>
+                                    <div data-i18n="Chat">Room</div>
+                                </a>
+                            </li>
+                        @endcan
                     </ul>
                 </aside>
                 <div class="layout-page">
@@ -414,11 +426,11 @@
                                 <li class="nav-item lh-1 me-3">
                                     <a
                                         class="github-button"
-                                        href="https://github.com/themeselection/sneat-html-admin-template-free"
+                                        href="/"
                                         data-icon="octicon-star"
                                         data-size="large"
                                         data-show-count="true"
-                                        aria-label="Star themeselection/sneat-html-admin-template-free on GitHub">Admin</a >
+                                        aria-label="Star themeselection/sneat-html-admin-template-free on GitHub">{{ Auth::user()->name }}</a >
                                 </li>
 
                                 <!-- User -->

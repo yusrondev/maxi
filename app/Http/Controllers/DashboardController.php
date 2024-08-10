@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Message;
+use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index(){
-
-        $data = DB::table('cms')
-        ->get();
-
-        return view('admin.dashboard', ['data' => $data]);
+        $room = Room::count();
+        $pending = Message::where('status', 0)->count();
+        return view('admin.dashboard', ['pending' => $pending, 'room' => $room]);
     }
 }

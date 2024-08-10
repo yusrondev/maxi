@@ -15,7 +15,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             CmsSeeder::class,
-            chatContent::class
+            chatContent::class,
+            PermissionTableSeeder::class,
+            CreateAdminUserSeeder::class
         ]);
     }
 }
