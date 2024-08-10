@@ -334,7 +334,8 @@
                 $('.chat-room').show();
                 $('.name-area').hide();
                 $('.qr').hide();
-                $('.navbar').hide();
+                $('.chat-header').hide();
+                $('.input-container').hide();
                 localStorage.removeItem('flag-field');
             }
 
