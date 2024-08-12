@@ -17,11 +17,12 @@ Route::group(['middleware' => ['permission:room-list']], function(){
         Route::post('/room/delete/{id}', [RoomController::class, 'delete']);
     });
 
+    Route::post('/room/reply-chat', [RoomController::class, 'replychat']);
+
     Route::group(['middleware' => ['permission:room-edit']], function(){
         Route::post('/room/{id}', [RoomController::class, 'update']);
     });
 
-    Route::post('/room/reply-chat', [RoomController::class, 'replychat']);
 });
 
 // user management
