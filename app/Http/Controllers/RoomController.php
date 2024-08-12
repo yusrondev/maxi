@@ -127,4 +127,12 @@ class RoomController extends Controller
 
         return redirect()->back();
     }
+
+    public function deletechat($id)
+    {
+        $chat = Message::where('id', $id);
+        $chat->delete();
+
+        return redirect()->back()->with('success', 'Chat deleted successfully.');
+    }
 }

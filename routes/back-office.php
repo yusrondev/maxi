@@ -8,6 +8,7 @@ Route::group(['middleware' => ['permission:room-list']], function(){
     Route::get('/room', [RoomController::class, 'index']);
     Route::get('/room/pending-chat/{id}', [RoomController::class, 'pendingchat']);
     Route::get('/room/approve-chat/{id}', [RoomController::class, 'approvechat']);
+    Route::delete('/room/delete-chat/{id}', [RoomController::class, 'deletechat'])->name('chat.destroy');
 
     Route::group(['middleware' => ['permission:room-create']], function(){
         Route::post('/room/store', [RoomController::class, 'store']);

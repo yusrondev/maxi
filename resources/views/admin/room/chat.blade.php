@@ -252,7 +252,7 @@
                 </div>
                 <div class="chat-box" id="chat-box">
                     @foreach ($model as $item)
-                        <div class="card chat-message" data-id="{{ $item->id }}">
+                        <div style="background-color: {{ @$chat_contents->chat_color }}" class="card chat-message" data-id="{{ $item->id }}">
                             <b>{{ $item->name }}</b>
                             @if ($item->image)
                                 <br><img src="{{ asset($item->image) }}" alt="Image" class="img-chat">
@@ -264,7 +264,7 @@
                         @if (!empty($item->reply))
                             @foreach ($item->reply as $replyitem)
                                 <div class="reply">
-                                    <i>Balasan dari <b>Admin</b> kepada {{ $item->name }}</i><br>
+                                    <!--<i>Balasan dari <b>Admin</b> kepada {{ $item->name }}</i><br>-->
                                     {{ @$replyitem->text }}
                                 </div>
                             @endforeach
@@ -467,10 +467,10 @@
 
                                 let avatarUrl = `https://www.booksie.com/files/profiles/22/mr-anonymous.png`;
 
-                                let final_content = `<p>${item.text}</p>`;
+                                let final_content = `<p style="font-family: {{@$chat_contents->chat_font}}; color: {{ @$chat_contents->username_color }}">${item.text}</p>`;
                                 if (item.image) {
                                     final_content = `<br><img class="img-chat" src="{{ asset('${item.image}') }}">`;
-                                    final_content += `<p>${item.text}</p>`;
+                                    final_content += `<p style="font-family: {{@$chat_contents->chat_font}}; color: {{ @$chat_contents->username_color }}">${item.text}</p>`;
                                 }
 
                                 let newMessage = `
@@ -483,7 +483,6 @@
                                 if(item.reply != null){
                                     $.each(item.reply, function(k, v){
                                         newMessage += `<div class="reply">
-                                                            <i>Balasan dari <b>Admin</b> kepada ${item.name}</i><br>
                                                             ${v.text}
                                                         </div>`;
                                     });

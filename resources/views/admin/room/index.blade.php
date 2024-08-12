@@ -11,7 +11,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="push-right">
-                                <a href="" data-link="{{ url('/room/chat/'.$item->code) }}" class="to-room"><i class='bx bx-link'></i></a>
+                                <a href="{{ url('/room/chat/'.$item->code) }}" class="to-room"><i class='bx bx-link'></i></a>
                                 <a data-bs-toggle="modal" data-bs-target="#modalActionDelete{{ $item->id }}" href='{{ url("/room/{$item->id}") }}'><i class='bx bx-trash'></i></a>
                                 <a data-bs-toggle="modal" data-bs-target="#modalActionEdit{{ $item->id }}" href='{{ url("/room/{$item->id}") }}'><i class='bx bx-edit'></i></a>
                             </div>
@@ -96,10 +96,8 @@
 @endsection
 @push('js')
     <script>
-        $('.to-room').click(function(e){
-            e.preventDefault();
+        $('.to-room').click(function(e) {
             localStorage.setItem('flag-field', true);
-            window.open($(this).data('link'), 'blank');
-        })
+        });
     </script>
 @endpush

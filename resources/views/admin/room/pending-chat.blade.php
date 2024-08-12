@@ -45,6 +45,11 @@
                             <td>
                                 <a href="{{ url('/room/approve-chat/'.$item->id) }}" class="btn btn-primary"><i class='bx bx-check' ></i></a>
                                 <a data-name="{{ $item->name }}" data-id="{{ $item->id }}" data-msg="{{ $item->text }}" class="btn btn-dark text-white reply"><i class='bx bx-message-dots'></i></a>
+                                <form action="{{ route('chat.destroy', $item->id) }}" method="POST" class="d-inline-block delete-form">
+                                @csrf
+                                @method('DELETE')
+                                    <button type="submit" class="btn btn-danger"><i class='bx bx-x'></i></button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
