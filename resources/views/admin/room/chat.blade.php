@@ -24,7 +24,7 @@
         }
 
         .chat-room{
-            /* display: none; */
+            display: none;
         }
 
         .chat-container {
@@ -352,7 +352,7 @@
                     // Check if the selected file is an image
                     if (file.type.startsWith('image/') && flag_upload == false) {
                         let reader = new FileReader();
-                        
+
                         // Load the image and display it in an img tag
                         reader.onload = function(e) {
                             $('#image-preview').attr('src', e.target.result);
@@ -365,16 +365,16 @@
                     }
                 }
             });
-            
+
             $('#submit-btn').click(function(){
                 name = $('#name').val();
                 let disclaimerChecked = $('#disclaimer').is(':checked');
-                
+
                 if (name.trim() === '') {
                     alert('Harap masukkan nama Anda.');
                     return;
                 }
-                
+
                 if (!disclaimerChecked) {
                     alert('Anda harus menyetujui syarat dan ketentuan.');
                     return;
