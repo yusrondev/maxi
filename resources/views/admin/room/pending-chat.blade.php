@@ -131,6 +131,7 @@
                                     <td>
                                         <a href="${approve_link + "/" + item.id}" class="btn btn-primary"><i class='bx bx-check' ></i></a>
                                         <a data-name="${item.name}" data-id="${item.id}" data-msg="${item.text}" class="btn btn-dark reply text-white"><i class='bx bx-message-dots'></i></a>
+                                        <a href="#" class="btn btn-danger delete-chat" data-id="${item.id}"><i class='bx bx-x'></i></a>
                                     </td>
                                 </tr>
                             `;
@@ -143,5 +144,23 @@
             })
 
         }, 500);
+
+        $('body').on('click', '.delete-chat', function(){
+            let id_msg = $(this).data('id');
+            let elem = $(this);
+            $.ajax({
+                url : "{{ url('/room/delete-chat') }}" + "/" + id_msg,
+                type : "DELETE",
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success:function(res) {
+                    console.log(res);
+                },
+                error:function(err){
+                    elem.closest('tr').remove();
+                }
+            });
+        });
     </script>
 @endpush

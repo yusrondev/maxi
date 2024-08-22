@@ -21,6 +21,9 @@ Route::post('/receive', [RoomController::class, 'receive']);
 Route::post('/api/send-msg', [FrontendController::class, 'sendmsg']);
 Route::post('/api/get-msg', [FrontendController::class, 'getmsg']);
 
+// cms & chat_contents data
+Route::get('/api/get-cms', [FrontendController::class, 'getcms']);
+
 // room chat
 Route::get('/room/chat/{code}', [RoomController::class, 'roomchat']);
 
@@ -56,6 +59,7 @@ Route::group(['middleware' => ['permission:cms-list']], function(){
     Route::get('/cms', [CMSController::class, 'index'])->name('cms');
     Route::group(['middleware' => ['permission:cms-update']], function(){
         Route::put('/cms/{id}', [CMSController::class, 'update'])->name('cms.update');
+        Route::delete('/cms/{id}/image', [CMSController::class, 'image_destroy'])->name('cms.destroyImage');
     });
     Route::put('/cms/chat_content/{id}', [CMSController::class, 'chatContent_update'])->name('chat_content.update');
 });

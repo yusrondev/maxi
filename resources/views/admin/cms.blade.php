@@ -36,6 +36,19 @@
                                     </div>
                                 </div>
                             </div><br>
+                                <h5>Background :</h5>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <img id="image-preview" style="width:100px" src="{{ asset('/assets/image_content/'.$data->image) }}">
+                                    </div>
+                                    <div class="col">
+                                        <div class="grid_12">
+                                            <input type="file" name="image" class="form-control" /><br>
+                                            <button id="delete-button" type="button" class="btn btn-danger" data-id="{{ $data->id }}">Delete Image</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            <br>
                             <div class="row">
                                 <div class="col">
                                     <h5>Primary Color</h5>
@@ -269,6 +282,16 @@
                             </div><br>
                             <div class="row">
                                 <div class="col">
+                                <label for="chatFontPreview" class="form-label">Chat Name Size</label>
+                                    <input class="form-control" type="number" min="0" name="chat_sizeName" value="{{ $data_chat->chat_sizeName }}">
+                                </div>
+                                <div class="col">
+                                    <label for="chatFontPreview" class="form-label">Chat Size</label>
+                                    <input class="form-control" type="number" min="0" name="chat_size" value="{{ $data_chat->chat_size }}">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
                                     <label for="usernameColor" class="form-label">Color Username And Chat</label>
                                     <input type="color" id="usernameColor" name="username_color" class="form-control"  value="{{ $data_chat->username_color }}"/>
                                 </div>
@@ -360,6 +383,61 @@
     document.addEventListener('DOMContentLoaded', function() {
         updateFontPreview('usernameFontPreview', document.getElementById('usernameFont').value);
         updateFontPreview('chatFontPreview', document.getElementById('chatFont').value);
+
+        const deleteButton = document.getElementById('delete-button');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        if (deleteButton) {
+            deleteButton.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const deleteUrl = `{{ url('/cms') }}/${id}/image`;
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to recover this image!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(deleteUrl, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            Swal.fire(
+                                'Deleted!',
+                                data.success, // Menggunakan pesan sukses dari respons JSON
+                                'success'
+                            ).then(() => {
+                                // Update atau hapus preview gambar
+                                document.getElementById('image-preview').src = '{{ asset('/assets/image_content/default-image.jpg') }}';
+                            });
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                            Swal.fire(
+                                'Error!',
+                                'An error occurred while deleting the image.',
+                                'error'
+                            );
+                        });
+                    }
+                });
+            });
+        }
     });
 </script>
 @endpush

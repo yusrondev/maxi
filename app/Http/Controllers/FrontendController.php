@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Chat_content;
+use App\Models\Cms;
 use App\Models\Message;
 use Illuminate\Http\Request;
 
@@ -58,6 +60,17 @@ class FrontendController extends Controller
         $message->save();
 
         return response()->json(['success' => true]);
+    }
+
+    public function getcms()
+    {
+        $dynamic_cms = Cms::orderBy('id', 'DESC')->first();
+        $dynamic_content = Chat_content::orderBy('id', 'DESC')->first();
+
+        return response()->json([
+            'dynamic_cms' => $dynamic_cms,
+            'dynamic_content' => $dynamic_content
+        ]);
     }
 
 }

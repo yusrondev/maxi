@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Cms extends Model
 {
     protected $fillable = [
-        'website_name', 'logo', 'primary_color', 'secondary_color',
+        'website_name', 'logo', 'image', 'primary_color', 'secondary_color',
     ];
 }

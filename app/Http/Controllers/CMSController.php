@@ -26,6 +26,7 @@ class CMSController extends Controller
         $request->validate([
             'website_name' => 'required|string|max:255',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'primary_color' => 'required|string|size:7',
             'secondary_color' => 'required|string|size:7',
         ]);
@@ -47,6 +48,17 @@ class CMSController extends Controller
             $cms->logo = $logoName;
         }
 
+        if ($request->hasFile('image')) {
+            if ($cms->image && file_exists(public_path('/assets/image_content/'.$cms->image))) {
+                unlink(public_path('/assets/image_content/'.$cms->image));
+            }
+
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('/assets/image_content'), $imageName);
+            $cms->image = $imageName;
+        }
+
         $cms->save();
 
         return response()->json(['message' => 'Data updated successfully!']);
@@ -59,6 +71,8 @@ class CMSController extends Controller
             'chat_font' => 'required|string|max:255',
             'username_color' => 'required|string|max:255',
             'chat_color' => 'required|string|max:255',
+            'chat_sizeName' => 'required|string',
+            'chat_size' => 'required|string',
         ]);
 
         $cms = Chat_content::findOrFail($id);
@@ -67,6 +81,8 @@ class CMSController extends Controller
         $cms->chat_font = $request->input('chat_font');
         $cms->username_color = $request->input('username_color');
         $cms->chat_color = $request->input('chat_color');
+        $cms->chat_sizeName = $request->input('chat_sizeName');
+        $cms->chat_size = $request->input('chat_size');
 
         $cms->save();
 
@@ -147,4 +163,26 @@ class CMSController extends Controller
 
         return response()->json(['error' => 'User not found'], 404);
     }
+
+    public function image_destroy($id)
+    {
+        // Temukan model berdasarkan ID
+        $data = CMS::find($id);
+
+        if ($data && $data->image) {
+            // Hapus file gambar dari storage
+            $imagePath = public_path('/assets/image_content/' . $data->image);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+            
+            // Set field image menjadi null di database
+            $data->image = null;
+            $data->save();
+        }
+
+        // Kembalikan response JSON untuk AJAX
+        return response()->json(['success' => 'Image deleted successfully']);
+    }
+
 }

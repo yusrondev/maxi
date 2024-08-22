@@ -19,7 +19,7 @@
             color: {{ @$cms->secondary_color }} !important;
             background-color: #fff;
             justify-content: center;
-            background-image: url('https://png.pngtree.com/background/20211216/original/pngtree-yellow-vector-abstract-background-picture-image_1524827.jpg');
+            background-image: url('https://wallpapers.com/images/hd/1280x720-gaming-0yhvmfxag0yu5r34.jpg');
             background-size: cover;
         }
         .submit{

@@ -20,7 +20,13 @@
             /* font-family: 'Roboto', sans-serif; */
             margin: 0;
             padding: 0;
-            background-color: {{$cms->primary_color}}!important;
+            <?php if ($cms->image): ?>
+                background-image: url('<?php echo $cms->image ? "/assets/image_content/" . $cms->image : ""; ?>');
+                background-repeat: no-repeat;
+                background-size: cover;
+            <?php else: ?>
+                background-color: {{$cms->primary_color}};
+            <?php endif; ?>
         }
 
         .chat-room{
@@ -208,7 +214,7 @@
             stroke-width: 1;
         }
 
-        .img-chat{max-width:300px;max-height:300px;margin-top:10px;border-radius:10px}
+        .img-chat{width:300px;height:300px;margin-top:10px;border-radius:10px}
     </style>
 
     <body>
@@ -217,7 +223,7 @@
                 <div class="col-10 offset-1">
                     <img class="img_icon"
                         src="{{ asset('/assets/image_content/'. $cms->logo ) }}">
-                    <div style="margin-top: 10%; background-color: {{$cms->primary_color}}!important;" class="card">
+                    <div style="margin-top: 10%; background-color: {{$cms->primary_color}}!important;" class="card alert-name-section">
                         <div class="card-body">
                             <div class="form-group">
                                 <input type="text" id="name" class="form-control name" placeholder="Type your name...">
@@ -246,19 +252,19 @@
                 <div class="chat-header">
                     <div class="logo-container">
                         <h1>
-                            <img src="{{ asset('/assets/image_content/' . $cms->logo) }}" style="width:100px;" alt="Logo">
+                            <img class="img-logo" src="{{ asset('/assets/image_content/' . $cms->logo) }}" style="width:100px;" alt="Logo">
                         </h1>
                     </div>
                 </div>
                 <div class="chat-box" id="chat-box">
                     @foreach ($model as $item)
                         <div style="background-color: {{ @$chat_contents->chat_color }}" class="card chat-message" data-id="{{ $item->id }}">
-                            <b>{{ $item->name }}</b>
+                            <b style="font-size:{{ @$chat_contents->chat_sizeName }}px;" class="size-name">{{ $item->name }}</b>
                             @if ($item->image)
                                 <br><img src="{{ asset($item->image) }}" alt="Image" class="img-chat">
-                                <p style="font-family: {{@$chat_contents->chat_font}}; color: {{ @$chat_contents->username_color }}">{{ $item->text }}</p>
+                                <p class="item-text" style="font-family: {{@$chat_contents->chat_font}}; color: {{ @$chat_contents->username_color }}; font-size:{{ @$chat_contents->chat_size }}px">{{ $item->text }}</p>
                             @else
-                                <p style="font-family: {{@$chat_contents->chat_font}}; color: {{ @$chat_contents->username_color }}">{{ $item->text }}</p>
+                                <p class="item-text" style="font-family: {{@$chat_contents->chat_font}}; color: {{ @$chat_contents->username_color }}; font-size:{{ @$chat_contents->chat_size }}px">{{ $item->text }}</p>
                             @endif
                         </div>
                         @if (!empty($item->reply))
@@ -441,7 +447,7 @@
                 $('#image-preview').hide();
                 $('.area-image').hide();
                 $('.remove-image').hide();
-            })
+            });
 
             // autoload
             setInterval(() => {
@@ -464,32 +470,42 @@
                                 hours = hours;
                                 minutes = minutes < 10 ? '0'+minutes : minutes;
                                 let formattedTime = hours + ':' + minutes;
-
                                 let avatarUrl = `https://www.booksie.com/files/profiles/22/mr-anonymous.png`;
 
-                                let final_content = `<p style="font-family: {{@$chat_contents->chat_font}}; color: {{ @$chat_contents->username_color }}">${item.text}</p>`;
-                                if (item.image) {
-                                    final_content = `<br><img class="img-chat" src="{{ asset('${item.image}') }}">`;
-                                    final_content += `<p style="font-family: {{@$chat_contents->chat_font}}; color: {{ @$chat_contents->username_color }}">${item.text}</p>`;
-                                }
+                                // get cms setup
+                                $.ajax({
+                                    url : "{{ url('api/get-cms') }}",
+                                    type : "GET",
+                                    cache: false,
+                                    success:function(res){
+                                        console.log(res);
+                                        
+                                        let final_content = `<p class="item-text" style="font-family: ${res.dynamic_content.chat_font}; color: ${res.dynamic_content.username_color}; font-size:${res.dynamic_content.chat_size}px">${item.text}</p>`;
+                                
+                                        if (item.image) {
+                                            final_content = `<br><img class="img-chat" src="{{ asset('${item.image}') }}">`;
+                                            final_content += `<p class="item-text" style="font-family: ${res.dynamic_content.chat_font}; color: ${res.dynamic_content.username_color}; font-size:${res.dynamic_content.chat_size}px">${item.text}</p>`;
+                                        }
 
-                                let newMessage = `
-                                    <div class="card chat-message" data-id="${item.id}">
-                                        <b>${item.name}</b>
-                                        ${final_content}
-                                    </div>
-                                `;
+                                        let newMessage = `
+                                            <div style="background-color: ${res.dynamic_content.chat_color}" class="card chat-message" data-id="${item.id}">
+                                                <b style="font-size:${res.dynamic_content.chat_sizeName}px;" class="size-name">${item.name}</b>
+                                                ${final_content}
+                                            </div>
+                                        `;
 
-                                if(item.reply != null){
-                                    $.each(item.reply, function(k, v){
-                                        newMessage += `<div class="reply">
-                                                            ${v.text}
-                                                        </div>`;
-                                    });
-                                }
+                                        if(item.reply != null){
+                                            $.each(item.reply, function(k, v){
+                                                newMessage += `<div class="reply">
+                                                                    ${v.text}
+                                                                </div>`;
+                                            });
+                                        }
 
-                                // Append the new message
-                                $('.chat-box').append(newMessage);
+                                        // Append the new message
+                                        $('.chat-box').append(newMessage);
+                                    }
+                                });
                                 setTimeout(() => {
                                     toBottom();
                                 }, 500);
@@ -499,8 +515,85 @@
                             toBottom();
                         }
                     }
-                })
+                });
+
+                // dynamic cms
+                getCms();
             }, 500);
+
+            let previousValues = {
+                chat_color: "",
+                chat_sizeName: "",
+                chat_size: "",
+                chat_font: "",
+                username_color: "",
+                logo: "",
+                primary_color: ""
+            };
+
+            function getCms(){
+                $.ajax({
+                    url : "{{ url('api/get-cms') }}",
+                    type : "GET",
+                    cache: false,
+                    success:function(res){
+                        changeLayout(res);
+                    }
+                });
+            }
+
+            function hasChanged(newVal, oldVal) {
+                return JSON.stringify(newVal) !== JSON.stringify(oldVal);
+            }
+
+            function changeLayout(res) {
+                let newValues = {
+                    chat_color: res.dynamic_content.chat_color,
+                    chat_sizeName: res.dynamic_content.chat_sizeName,
+                    chat_size: res.dynamic_content.chat_size,
+                    chat_font: res.dynamic_content.chat_font,
+                    username_color: res.dynamic_content.username_color,
+                    logo: res.dynamic_cms.logo,
+                    primary_color: res.dynamic_cms.primary_color
+                };
+
+                // Check if anything changed
+                if (hasChanged(newValues, previousValues)) {
+                    // Update the DOM with new values
+                    updateDOM(newValues);
+                    // Update previousValues to newValues after changes
+                    previousValues = {...newValues}; // Use spread operator to create a new object
+                }
+            }
+
+            function updateDOM(values) {
+                if (values.chat_color !== previousValues.chat_color) {
+                    $('.chat-message').css('background-color', values.chat_color);
+                }
+                if (values.chat_sizeName !== previousValues.chat_sizeName) {
+                    $('.size-name').css('font-size', values.chat_sizeName + 'px !important');
+                }
+                if (values.chat_size !== previousValues.chat_size) {
+                    console.log('harusnya berubah menjadi ' + values.chat_size);
+                    
+                    $('.item-text').css('font-size', values.chat_size + 'px !important');
+                }
+                if (values.chat_font !== previousValues.chat_font) {
+                    $('.item-text').css('font-family', values.chat_font);
+                }
+                if (values.username_color !== previousValues.username_color) {
+                    $('.item-text').css('color', values.username_color);
+                }
+                if (values.logo !== previousValues.logo) {
+                    $('.img-logo').attr('src', "{{ asset('/assets/image_content') }}" + "/" + values.logo);
+                    $('.img_icon').attr('src', "{{ asset('/assets/image_content') }}" + "/" + values.logo);
+                }
+                if (values.primary_color !== previousValues.primary_color) {
+                    $('.alert-name-section').css('background-color', values.primary_color);
+                    $('body').css('background-color', values.primary_color);
+                }
+            }
+
         });
     </script>
 
